@@ -1,4 +1,4 @@
-package com.heroes.api.heroesapi.model;
+package com.ufund.api.ufundapi.model;
 
 import java.util.logging.Logger;
 

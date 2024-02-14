@@ -1,7 +1,8 @@
-package com.heroes.api.heroesapi.persistence;
+package com.ufund.api.ufundapi.persistence;
 
 import java.io.IOException;
-import com.heroes.api.heroesapi.model.Hero;
+
+import com.ufund.api.ufundapi.model.Hero;
 
 /**
  * Defines the interface for Hero object persistence

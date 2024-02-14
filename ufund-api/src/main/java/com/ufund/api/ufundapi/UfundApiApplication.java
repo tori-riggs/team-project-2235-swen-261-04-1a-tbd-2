@@ -9,5 +9,5 @@ public class UfundApiApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(UfundApiApplication.class, args);
 	}
-
+	
 }
