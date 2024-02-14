@@ -9,7 +9,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * @author SWEN Faculty
  */
 public class Need {
-    private static final Logger LOG = Logger.getLogger(Hero.class.getName());
+    private static final Logger LOG = Logger.getLogger(Need.class.getName());
 
     // Package private for tests
     static final String STRING_FORMAT = "Hero [id=%d, name=%s]";
