@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.logging.Logger;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ufund.api.ufundapi.model.Need;
 
@@ -177,7 +178,7 @@ public class NeedFileDAO implements NeedDAO {
         synchronized(needs) {
             // We create a new need object because the id field is immutable
             // and we need to assign the next unique id
-            Need newNeed = new Need(nextId(),need.getName());
+            Need newNeed = new Need(nextId(),need.getName(),need.getCost(),need.getQuantity(),need.getDescription());
             needs.put(newNeed.getId(),newNeed);
             save(); // may throw an IOException
             return newNeed;
