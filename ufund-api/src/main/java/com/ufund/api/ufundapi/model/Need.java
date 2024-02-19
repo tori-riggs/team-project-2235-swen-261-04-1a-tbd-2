@@ -12,7 +12,7 @@ public class Need {
     private static final Logger LOG = Logger.getLogger(Need.class.getName());
 
     // Package private for tests
-    static final String STRING_FORMAT = "Hero [id=%d, name=%s]";
+    static final String STRING_FORMAT = "Need [id=%d, name=%s]";
 
     @JsonProperty("id") private int id;
     @JsonProperty("name") private String name;
@@ -21,9 +21,12 @@ public class Need {
     @JsonProperty("name") private String description;
 
     /**
-     * Create a hero with the given id and name
-     * @param id The id of the hero
-     * @param name The name of the hero
+     * Create a need with the given id and name
+     * @param id The id of the need
+     * @param name The name of the need
+     * @param cost The cost of the need
+     * @param quantity The quantity of the need
+     * @param description The description of the need
      * 
      * {@literal @}JsonProperty is used in serialization and deserialization
      * of the JSON object to the Java object in mapping the fields.  If a field
