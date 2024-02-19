@@ -16,9 +16,9 @@ public class Need {
 
     @JsonProperty("id") private int id;
     @JsonProperty("name") private String name;
-    @JsonProperty("name") private int cost;
-    @JsonProperty("name") private int quantity;
-    @JsonProperty("name") private String description;
+    @JsonProperty("cost") private int cost;
+    @JsonProperty("quantity") private int quantity;
+    @JsonProperty("description") private String description;
 
     /**
      * Create a need with the given id and name
