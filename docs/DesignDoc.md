@@ -3,22 +3,18 @@ geometry: margin=1in
 ---
 # PROJECT Design Documentation
 
-> _The following template provides the headings for your Design
-> Documentation.  As you edit each section make sure you remove these
-> commentary 'blockquotes'; the lines that start with a > character
-> and appear in the generated PDF in italics but do so only **after** all team members agree that the requirements for that section and current Sprint have been met. **Do not** delete future Sprint expectations._
-
 ## Team Information
-* Team name: TEAMNAME
+* Team name: Team 1
 * Team members
-  * MEMBER1
-  * MEMBER2
-  * MEMBER3
-  * MEMBER4
+  * Rafid Khan
+  * Ryan Ackerley
+  * Patrick Wynne
+  * Victoria Rigoglioso
 
 ## Executive Summary
 
-This is a summary of the project.
+This web application allows users to contribute to a homeless charity. The application is managed
+by the administrator who can manage the current needs. The user can contribute to the needs they'd like to. 
 
 ### Purpose
 >  _**[Sprint 2 & 4]** Provide a very brief statement about the project and the most
@@ -34,11 +30,7 @@ This is a summary of the project.
 
 ## Requirements
 
-This section describes the features of the application.
-
-> _In this section you do not need to be exhaustive and list every
-> story.  Focus on top-level features from the Vision document and
-> maybe Epics and critical Stories._
+In a simplified authentication system for a Helper/U-fund Manager application, users log in with just a username, where logging in as "admin" identifies a user as the U-fund Manager. Helpers can view, search, add, or remove needs from their funding basket and checkout to fund chosen needs. U-fund Managers have the authority to add, remove, and edit needs in the system but cannot view Helpers' funding baskets. All data is persisted to files, ensuring that changes are reflected for the next user session. Users will also have the ability to submit suggestion messages to the U-fund Manager. 
 
 ### Definition of MVP
 > _**[Sprint 2 & 4]** Provide a simple description of the Minimum Viable Product._
@@ -54,7 +46,7 @@ This section describes the features of the application.
 
 This section describes the application domain.
 
-![Domain Model](domain-model-placeholder.png)
+![Domain Model](Domain-Analysis-Team1A.png)
 
 > _**[Sprint 2 & 4]** Provide a high-level overview of the domain for this application. You
 > can discuss the more important domain entities and their relationship
@@ -68,10 +60,8 @@ This section describes the application architecture.
 ### Summary
 
 The following Tiers/Layers model shows a high-level view of the webapp's architecture. 
-**NOTE**: detailed diagrams are required in later sections of this document.
-> _**[Sprint 1]** (Augment this diagram with your **own** rendition and representations of sample system classes, placing them into the appropriate M/V/VM (orange rectangle) tier section. Focus on what is currently required to support **Sprint 1 - Demo requirements**. Make sure to describe your design choices in the corresponding _**Tier Section**_ and also in the _**OO Design Principles**_ section below.)_
 
-![The Tiers & Layers of the Architecture](architecture-tiers-and-layers.png)
+![The Tiers & Layers of the Architecture](architecture.png)
 
 The web application, is built using the Model–View–ViewModel (MVVM) architecture pattern. 
 
@@ -108,7 +98,7 @@ This section describes the web interface flow; this is how the user views and in
  >* _Include other details such as attributes and method signatures that you think are needed to support the level of detail in your discussion._
 
 ### ViewModel Tier
-> _**[Sprint 1]** List the classes supporting this tier and provide a description of there purpose._
+NeedController.java -- This class handles the REST API requests for the Need resource
 
 > _**[Sprint 4]** Provide a summary of this tier of your architecture. This
 > section will follow the same instructions that are given for the View
@@ -116,11 +106,10 @@ This section describes the web interface flow; this is how the user views and in
 
 > _At appropriate places as part of this narrative provide **one** or more updated and **properly labeled**
 > static models (UML class diagrams) with some details such as critical attributes and methods._
-> 
-![Replace with your ViewModel Tier class diagram 1, etc.](model-placeholder.png)
+!(Viewmodel.png)
 
 ### Model Tier
-> _**[Sprint 1]** List the classes supporting this tier and provide a description of there purpose._
+Need.java -- Represents a Need entity 
 
 > _**[Sprint 2, 3 & 4]** Provide a summary of this tier of your architecture. This
 > section will follow the same instructions that are given for the View
@@ -129,11 +118,13 @@ This section describes the web interface flow; this is how the user views and in
 > _At appropriate places as part of this narrative provide **one** or more updated and **properly labeled**
 > static models (UML class diagrams) with some details such as critical attributes and methods._
 > 
-![Replace with your Model Tier class diagram 1, etc.](model-placeholder.png)
+!(model.png)
 
 ## OO Design Principles
 
-> _**[Sprint 1]** Name and describe the initial OO Principles that your team has considered in support of your design (and implementation) for this first Sprint._
+Controller (GRASP): A design pattern that assigns the responsibility of dealing with system events to a non-UI class that makes decisions and controls the flow of the application. It acts as an intermediary between the UI and the business logic, handling user input and invoking responses in the system.
+
+Single Responsibility Principle (SOLID): A principle that states a class should have only one reason to change, meaning it should have only one job or responsibility. This promotes a cleaner, more modular design by separating concerns within a software system.
 
 > _**[Sprint 2, 3 & 4]** Will eventually address upto **4 key OO Principles** in your final design. Follow guidance in augmenting those completed in previous Sprints as indicated to you by instructor. Be sure to include any diagrams (or clearly refer to ones elsewhere in your Tier sections above) to support your claims._
 
@@ -168,4 +159,4 @@ This section describes the web interface flow; this is how the user views and in
 > those._
 
 ## Ongoing Rationale
->_**[Sprint 1, 2, 3 & 4]** Throughout the project, provide a time stamp **(yyyy/mm/dd): Sprint # and description** of any _**mayor**_ team decisions or design milestones/changes and corresponding justification._
+(2024/02/21): Sprint #1 -- Created the necessary utilities needed to perform cURL operations on the Need entity. Includes functionalities such as creating / deleting need, retrieving specific need, searching need by partial name, updating needs, and listing all needs. 
