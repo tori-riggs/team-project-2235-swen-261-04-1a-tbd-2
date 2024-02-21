@@ -106,7 +106,7 @@ NeedController.java -- This class handles the REST API requests for the Need res
 
 > _At appropriate places as part of this narrative provide **one** or more updated and **properly labeled**
 > static models (UML class diagrams) with some details such as critical attributes and methods._
-!(Viewmodel.png)
+![ViewModel](ViewModel.png)
 
 ### Model Tier
 Need.java -- Represents a Need entity 
@@ -118,7 +118,7 @@ Need.java -- Represents a Need entity
 > _At appropriate places as part of this narrative provide **one** or more updated and **properly labeled**
 > static models (UML class diagrams) with some details such as critical attributes and methods._
 > 
-!(model.png)
+![Model](Model.png)
 
 ## OO Design Principles
 
