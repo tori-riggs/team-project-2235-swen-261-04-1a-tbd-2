@@ -1,4 +1,4 @@
-package com.needs.api.needsapi.controller;
+package com.ufund.api.ufundapi.controller;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.doThrow;
@@ -7,8 +7,8 @@ import static org.mockito.Mockito.when;
 
 import java.io.IOException;
 
-import com.needs.api.needsapi.persistence.NeedDAO;
-import com.needs.api.needsapi.model.Need;
+import com.ufund.api.ufundapi.persistence.NeedDAO;
+import com.ufund.api.ufundapi.model.Need;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
@@ -39,12 +39,12 @@ public class NeedControllerTest {
     @Test
     public void testGetNeed() throws IOException {  // getNeed may throw IOException
         // Setup
-        Need need = new Need(99,"Mittens", 10, 5, 'A pair of mittens.');
+        Need need = new Need(99,"Mittens", 10, 5, "A pair of mittens.");
         // When the same id is passed in, our mock Need DAO will return the Need object
         when(mockNeedDAO.getNeed(need.getId())).thenReturn(need);
 
         // Invoke
-        ResponseEntity<Need> response = needController.getNeed(need.getId());
+        ResponseEntity<Need> response = needController.get(need.getId());
 
         // Analyze
         assertEquals(HttpStatus.OK,response.getStatusCode());
@@ -60,7 +60,7 @@ public class NeedControllerTest {
         when(mockNeedDAO.getNeed(needId)).thenReturn(null);
 
         // Invoke
-        ResponseEntity<Need> response = needController.getNeed(needId);
+        ResponseEntity<Need> response = needController.get(needId);
 
         // Analyze
         assertEquals(HttpStatus.NOT_FOUND,response.getStatusCode());
@@ -74,7 +74,7 @@ public class NeedControllerTest {
         doThrow(new IOException()).when(mockNeedDAO).getNeed(needId);
 
         // Invoke
-        ResponseEntity<Need> response = needController.getNeed(needId);
+        ResponseEntity<Need> response = needController.get(needId);
 
         // Analyze
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR,response.getStatusCode());
@@ -88,7 +88,7 @@ public class NeedControllerTest {
     @Test
     public void testCreateNeed() throws IOException {  // createNeed may throw IOException
         // Setup
-        Need need = new Need(95,"Socks", 7, 20, 'A pair of socks.');
+        Need need = new Need(95,"Socks", 7, 20, "A pair of socks.");
         // when createNeed is called, return true simulating successful
         // creation and save
         when(mockNeedDAO.createNeed(need)).thenReturn(need);
@@ -104,7 +104,7 @@ public class NeedControllerTest {
     @Test
     public void testCreateNeedFailed() throws IOException {  // createNeed may throw IOException
         // Setup
-        Need need = new Need(95,"Socks", 7, 20, 'A pair of socks.');
+        Need need = new Need(95,"Socks", 7, 20, "A pair of socks.");
         // when createNeed is called, return false simulating failed
         // creation and save
         when(mockNeedDAO.createNeed(need)).thenReturn(null);
@@ -119,7 +119,7 @@ public class NeedControllerTest {
     @Test
     public void testCreateNeedHandleException() throws IOException {  // createNeed may throw IOException
         // Setup
-        Need need = new Need(95,"Socks", 7, 20, 'A pair of socks.');
+        Need need = new Need(95,"Socks", 7, 20, "A pair of socks.");
 
         // When createNeed is called on the Mock Need DAO, throw an IOException
         doThrow(new IOException()).when(mockNeedDAO).createNeed(need);
@@ -134,7 +134,7 @@ public class NeedControllerTest {
     @Test
     public void testUpdateNeed() throws IOException { // updateNeed may throw IOException
         // Setup
-        Need need = new Need(95,"Socks", 7, 20, 'A pair of socks.');
+        Need need = new Need(95,"Socks", 7, 20, "A pair of socks.");
         // when updateNeed is called, return true simulating successful
         // update and save
         when(mockNeedDAO.updateNeed(need)).thenReturn(need);
@@ -152,7 +152,7 @@ public class NeedControllerTest {
     @Test
     public void testUpdateNeedFailed() throws IOException { // updateNeed may throw IOException
         // Setup
-        Need need = new Need(99,"Galactic Agent");
+        Need need = new Need(95,"Socks", 7, 20, "A pair of socks.");
         // when updateNeed is called, return true simulating successful
         // update and save
         when(mockNeedDAO.updateNeed(need)).thenReturn(null);
@@ -167,7 +167,7 @@ public class NeedControllerTest {
     @Test
     public void testUpdateNeedHandleException() throws IOException { // updateNeed may throw IOException
         // Setup
-        Need need = new Need(99,"Galactic Agent");
+        Need need = new Need(95,"Socks", 7, 20, "A pair of socks.");
         // When updateNeed is called on the Mock Need DAO, throw an IOException
         doThrow(new IOException()).when(mockNeedDAO).updateNeed(need);
 
@@ -182,8 +182,8 @@ public class NeedControllerTest {
     public void testGetNeeds() throws IOException { // getNeeds may throw IOException
         // Setup
         Need[] needs = new Need[2];
-        needs[0] = new Need(99,"Bolt");
-        needs[1] = new Need(100,"The Great Iguana");
+        needs[0] = new Need(95,"Socks", 7, 20, "A pair of socks.");
+        needs[1] = new Need(96,"Socks2", 8, 21, "A pair of socks2.");
         // When getNeeds is called return the needs created above
         when(mockNeedDAO.getNeeds()).thenReturn(needs);
 
@@ -213,8 +213,8 @@ public class NeedControllerTest {
         // Setup
         String searchString = "la";
         Need[] needs = new Need[2];
-        needs[0] = new Need(99,"Galactic Agent");
-        needs[1] = new Need(100,"Ice Gladiator");
+        needs[0] = new Need(95,"Socks", 7, 20, "A pair of socks.");
+        needs[1] = new Need(96,"Socks2", 8, 21, "A pair of socks2.");
         // When findNeeds is called with the search string, return the two
         /// needs above
         when(mockNeedDAO.findNeeds(searchString)).thenReturn(needs);
