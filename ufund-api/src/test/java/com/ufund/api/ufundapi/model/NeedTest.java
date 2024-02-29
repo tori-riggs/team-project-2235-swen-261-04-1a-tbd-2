@@ -19,7 +19,7 @@ public class NeedTest {
     @Test
     public void testCtor() {
         // Setup
-        int expected_id = 99;
+        int expected_id = 1;
         String expected_name = "mittens";
         int expected_cost = 10;
         int expected_quantity = 100;
@@ -37,7 +37,7 @@ public class NeedTest {
     @Test
     public void testName() {
         // Setup
-        int id = 99;
+        int id = 1;
         String name = "mittens";
         int cost = 10;
         int quantity = 100;
@@ -45,7 +45,7 @@ public class NeedTest {
 
         Need need = new Need(id,name,cost,quantity,description);
 
-        String expected_name = "Galactic Agent";
+        String expected_name = "socks";
 
         // Invoke
         need.setName(expected_name);
@@ -57,7 +57,7 @@ public class NeedTest {
     @Test
     public void testCost() {
         // Setup
-        int id = 99;
+        int id = 1;
         String name = "mittens";
         int cost = 10;
         int quantity = 100;
@@ -77,7 +77,7 @@ public class NeedTest {
     @Test
     public void testQuantity() {
         // Setup
-        int id = 99;
+        int id = 1;
         String name = "mittens";
         int cost = 10;
         int quantity = 100;
@@ -97,7 +97,7 @@ public class NeedTest {
     @Test
     public void testDescription() {
         // Setup
-        int id = 99;
+        int id = 1;
         String name = "mittens";
         int cost = 10;
         int quantity = 100;
@@ -117,7 +117,7 @@ public class NeedTest {
     @Test
     public void testToString() {
         // Setup
-        int id = 99;
+        int id = 1;
         String name = "mittens";
         int cost = 10;
         int quantity = 100;
