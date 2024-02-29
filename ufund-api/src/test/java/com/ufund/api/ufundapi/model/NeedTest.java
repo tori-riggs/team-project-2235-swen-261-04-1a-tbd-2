@@ -1,5 +1,6 @@
-package com.ufund.api.ufundapi.model_test;
-import com.ufund.api.ufundapi.model.Need;
+package com.ufund.api.ufundapi.model;
+
+//import com.ufund.api.ufundapi.model.Need;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
