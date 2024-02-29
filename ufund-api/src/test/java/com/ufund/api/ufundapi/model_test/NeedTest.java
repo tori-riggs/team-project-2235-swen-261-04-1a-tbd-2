@@ -1,4 +1,4 @@
-package model_test;
+package com.ufund.api.ufundapi.model_test;
 import com.ufund.api.ufundapi.model.Need;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -100,7 +100,7 @@ public class NeedTest {
         String name = "mittens";
         int cost = 10;
         int quantity = 100;
-        String description = "these are mittens, they keep your hands warm";
+        String description = "these are mittens, they keep your hands wKsarm";
 
         Need need = new Need(id,name,cost,quantity,description);
 
