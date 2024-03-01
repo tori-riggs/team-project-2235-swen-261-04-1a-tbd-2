@@ -45,28 +45,6 @@ public class AuthFileDAO implements AuthDAO {
         load();  // load the needs from the file
     }
 
-    private AuthCredentials[] getAuthCredentialsArray() { // if containsText == null, no filter
-        ArrayList<AuthCredentials> credentialsArrayList = new ArrayList<>();
-
-        for (AuthCredentials credentials : authCredentials.values()) {
-            credentialsArrayList.add(credentials);
-        }
-
-        AuthCredentials[] credentialsArray = new AuthCredentials[credentialsArrayList.size()];
-        credentialsArrayList.toArray(credentialsArray);
-        return credentialsArray;
-    }
-
-    private boolean save() throws IOException {
-        AuthCredentials[] authCredentialsArray = getAuthCredentialsArray();
-
-        // Serializes the Java Objects to JSON objects into the file
-        // writeValue will thrown an IOException if there is an issue
-        // with the file or reading from the file
-        objectMapper.writeValue(new File(filename),authCredentialsArray);
-        return true;
-    }
-
     private boolean load() throws IOException {
         authCredentials = new TreeMap<>();
 
@@ -91,49 +69,6 @@ public class AuthFileDAO implements AuthDAO {
                 return authCredentials.get(username);
             else
                 return null;
-        }
-    }
-
-    /**
-    ** {@inheritDoc}
-     */
-    @Override
-    public AuthCredentials createAuthCredentials(AuthCredentials credentials) throws IOException {
-        synchronized(authCredentials) {
-            AuthCredentials newCredentials = new AuthCredentials(credentials.getUsername(), credentials.getPassword());
-            authCredentials.put(newCredentials.getUsername(),newCredentials);
-            save(); // may throw an IOException
-            return newCredentials;
-        }
-    }
-
-    /**
-    ** {@inheritDoc}
-     */
-    @Override
-    public AuthCredentials updateAuthCredentials(AuthCredentials credentials) throws IOException {
-        synchronized(authCredentials) {
-            if (!authCredentials.containsKey(credentials.getUsername()))
-                return null;  // auth does not exist
-
-            authCredentials.put(credentials.getUsername(),credentials);
-            save(); // may throw an IOException
-            return credentials;
-        }
-    }
-
-    /**
-    ** {@inheritDoc}
-     */
-    @Override
-    public boolean deleteAuthCredentials(String username) throws IOException {
-        synchronized(authCredentials) {
-            if (authCredentials.containsKey(username)) {
-                authCredentials.remove(username);
-                return save();
-            }
-            else
-                return false;
         }
     }
 }

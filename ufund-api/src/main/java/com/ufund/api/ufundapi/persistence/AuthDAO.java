@@ -12,10 +12,5 @@ import java.io.IOException;
  */
 public interface AuthDAO {
     AuthCredentials getAuthCredentials(String username);
-    AuthCredentials createAuthCredentials(AuthCredentials credentials) throws IOException;
-
-    AuthCredentials updateAuthCredentials(AuthCredentials credentials) throws IOException;
-
-    boolean deleteAuthCredentials(String username) throws IOException;
 
 }
