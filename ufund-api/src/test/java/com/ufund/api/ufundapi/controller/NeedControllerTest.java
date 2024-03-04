@@ -183,6 +183,7 @@ public class NeedControllerTest {
         // Setup
         Need[] needs = new Need[2];
         needs[0] = new Need(95,"Socks", 7, 20, "A pair of socks.");
+        needs[1] = new Need(96,"Socks2", 8, 21, "A pair of socks2.");
         needs[1] = new Need(99,"Mittens", 10, 5, "A pair of mittens.");
         // When getNeeds is called return the needs created above
         when(mockNeedDAO.getNeeds()).thenReturn(needs);
@@ -214,6 +215,7 @@ public class NeedControllerTest {
         String searchString = "la";
         Need[] needs = new Need[2];
         needs[0] = new Need(95,"Socks", 7, 20, "A pair of socks.");
+        needs[1] = new Need(96,"Socks2", 8, 21, "A pair of socks2.");
         needs[1] = new Need(99,"Mittens", 10, 5, "A pair of mittens.");
         // When findNeeds is called with the search string, return the two
         /// needs above
