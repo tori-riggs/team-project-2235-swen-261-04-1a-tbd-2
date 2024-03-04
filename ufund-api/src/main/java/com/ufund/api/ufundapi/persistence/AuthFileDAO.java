@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.logging.Logger;
@@ -46,7 +47,7 @@ public class AuthFileDAO implements AuthDAO {
     }
 
     private boolean load() throws IOException {
-        authCredentials = new TreeMap<>();
+        authCredentials = new HashMap<>();
 
         // Deserializes the JSON objects from the file into an array of needs
         // readValue will throw an IOException if there's an issue with the file
