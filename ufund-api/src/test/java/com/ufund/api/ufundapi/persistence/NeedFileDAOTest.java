@@ -1,4 +1,4 @@
-package com.persistence;
+package com.ufund.api.ufundapi.persistence;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
