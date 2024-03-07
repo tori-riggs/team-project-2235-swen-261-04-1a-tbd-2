@@ -1,5 +1,9 @@
 package com.ufund.api.ufundapi.controller;
 
+import com.ufund.api.ufundapi.enums.AuthLevel;
+import com.ufund.api.ufundapi.model.NeedCheckout;
+import com.ufund.api.ufundapi.service.AuthService;
+import com.ufund.api.ufundapi.service.NeedService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -32,7 +36,8 @@ import java.util.logging.Logger;
 @RequestMapping("needs")
 public class NeedController {
     private static final Logger LOG = Logger.getLogger(NeedController.class.getName());
-    private NeedDAO needDao;
+    private NeedService needService;
+    private AuthService authService;
 
     /**
      * Creates a REST API controller to reponds to requests
@@ -41,8 +46,9 @@ public class NeedController {
      * <br>
      * This dependency is injected by the Spring Framework
      */
-    public NeedController(NeedDAO needDao) {
-        this.needDao = needDao;
+    public NeedController(NeedService needService, AuthService authService) {
+        this.needService = needService;
+        this.authService = authService;
     }
 
     /**
@@ -59,7 +65,7 @@ public class NeedController {
     public ResponseEntity<Need> get(@PathVariable int id) throws IOException {
         LOG.info("GET /needs/" + id);
         try {
-            Need need = needDao.getNeed(id);
+            Need need = needService.getNeedFromCupboard(id);
             if (need != null)
                 return new ResponseEntity<Need>(need,HttpStatus.OK);
             else
@@ -83,7 +89,7 @@ public class NeedController {
         LOG.info("GET /needs");
 
         try {
-            Need[] needs = needDao.getNeeds();
+            Need[] needs = needService.getNeedsFromCupboard();
             return new ResponseEntity<>(needs, HttpStatus.OK);
         } catch (IOException e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -108,7 +114,7 @@ public class NeedController {
         LOG.info("GET /needs/?name="+name);
 
         try {
-            Need[] foundNeed = needDao.findNeeds(name);
+            Need[] foundNeed = needService.findMatchingNeedsFromCupboard(name);
             return new ResponseEntity<>(foundNeed, HttpStatus.OK);
         } catch (IOException e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -129,7 +135,7 @@ public class NeedController {
         LOG.info("POST /needs " + need);
 
         try {
-            Need newNeed = needDao.createNeed(need);
+            Need newNeed = needService.createNeedInCupboard(need);
             if(newNeed == null) {
                 return new ResponseEntity<>(HttpStatus.CONFLICT);
             }
@@ -155,7 +161,7 @@ public class NeedController {
         LOG.info("PUT /needs " + need);
 
         try {
-            Need updated = needDao.updateNeed(need);
+            Need updated = needService.updateNeedInCupboard(need);
             if(updated == null) {
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             }
@@ -175,15 +181,63 @@ public class NeedController {
      * ResponseEntity with HTTP status of INTERNAL_SERVER_ERROR otherwise
      */
     @DeleteMapping("/{id}")
-    public ResponseEntity<Need> deleteNeed(@PathVariable int id) {
+    public ResponseEntity<Need> deleteNeed(@PathVariable int id, @RequestParam String username, @RequestParam String password) {
         LOG.info("DELETE /needs/" + id);
 
+        if(!authService.hasPermissionLevel(username, password, AuthLevel.ADMIN)) {
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        }
         try {
-            boolean deleted = needDao.deleteNeed(id);
+            boolean deleted = needService.deleteNeedFromCupboard(id);
             if(deleted) {
                 return new ResponseEntity<>(HttpStatus.OK);
             }
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } catch (IOException e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping("funding-basket")
+    public ResponseEntity<NeedCheckout> getNeedCheckout(@RequestParam String username, @RequestParam String password) {
+        try {
+            if(authService.credentialsExist(username, password)) {
+                //this cant be null because the service creates a need checkout on get
+                NeedCheckout checkout = needService.getFundingBasket(username);
+                return new ResponseEntity<>(checkout, HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+            }
+        } catch (IOException e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @PutMapping("funding-basket")
+    public ResponseEntity<NeedCheckout> addNeedToFundingBasket(@RequestBody int id, @RequestParam String username, @RequestParam String password) {
+        try {
+            if(authService.credentialsExist(username, password)) {
+                //this cant be null because the service creates a need checkout on get
+                needService.addNeedToFundingBasket(username, id);
+                return new ResponseEntity<>(HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+            }
+        } catch (IOException e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @DeleteMapping("funding-basket")
+    public ResponseEntity<NeedCheckout> removeNeedFromFundingBasket(@RequestBody int id, @RequestParam String username, @RequestParam String password) {
+        try {
+            if(authService.credentialsExist(username, password)) {
+                //this cant be null because the service creates a need checkout on get
+                needService.removeNeedFromFundingBasket(username, id);
+                return new ResponseEntity<>(HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+            }
         } catch (IOException e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
