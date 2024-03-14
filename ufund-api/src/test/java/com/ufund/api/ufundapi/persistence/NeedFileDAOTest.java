@@ -107,6 +107,18 @@ public class NeedFileDAOTest {
     }
 
     @Test
+    public void testUpdateNeed() {
+        Need need = new Need(99, "Socks", 10, 20, "A pair of socks.");
+
+        Need result = assertDoesNotThrow(() -> needFileDAO.updateNeed(need), 
+                                            "Unexpected exception thrown");
+        
+        assertNotNull(result);
+        Need actual = needFileDAO.getNeed(need.getId());
+        assertEquals(actual, need);
+    }
+
+    @Test
     public void testSaveException() throws IOException {
         doThrow(new IOException())
             .when(mockObjectMapper)
