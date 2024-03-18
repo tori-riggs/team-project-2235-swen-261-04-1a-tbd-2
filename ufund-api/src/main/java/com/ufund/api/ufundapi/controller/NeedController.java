@@ -39,13 +39,7 @@ public class NeedController {
     private NeedService needService;
     private AuthService authService;
 
-    /**
-     * Creates a REST API controller to reponds to requests
-     * 
-     * @param needDao The {@link NeedDAO Need Data Access Object} to perform CRUD operations
-     * <br>
-     * This dependency is injected by the Spring Framework
-     */
+
     public NeedController(NeedService needService, AuthService authService) {
         this.needService = needService;
         this.authService = authService;
@@ -61,7 +55,7 @@ public class NeedController {
      * ResponseEntity with HTTP status of INTERNAL_SERVER_ERROR otherwise
      * @throws IOException 
      */
-    @GetMapping("/{id}")
+    @GetMapping("cupboard/{id}")
     public ResponseEntity<Need> get(@PathVariable int id) throws IOException {
         LOG.info("GET /needs/" + id);
         try {
@@ -84,7 +78,7 @@ public class NeedController {
      * HTTP status of OK<br>
      * ResponseEntity with HTTP status of INTERNAL_SERVER_ERROR otherwise
      */
-    @GetMapping("")
+    @GetMapping("cupboard")
     public ResponseEntity<Need[]> getNeeds() {
         LOG.info("GET /needs");
 
@@ -109,7 +103,7 @@ public class NeedController {
      * Example: Find all needs that contain the text "ma"
      * GET http://localhost:8080/needs/?name=ma
      */
-    @GetMapping("/")
+    @GetMapping("cupboard/")
     public ResponseEntity<Need[]> searchNeeds(@RequestParam String name) {
         LOG.info("GET /needs/?name="+name);
 
@@ -130,11 +124,14 @@ public class NeedController {
      * ResponseEntity with HTTP status of CONFLICT if {@link Need need} object already exists<br>
      * ResponseEntity with HTTP status of INTERNAL_SERVER_ERROR otherwise
      */
-    @PostMapping("")
-    public ResponseEntity<Need> createNeed(@RequestBody Need need) {
+    @PostMapping("cupboard")
+    public ResponseEntity<Need> createNeed(@RequestBody Need need, @RequestParam String username, @RequestParam String password) {
         LOG.info("POST /needs " + need);
 
         try {
+            if(!authService.hasPermissionLevel(username, password, AuthLevel.ADMIN)) {
+                return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+            }
             Need newNeed = needService.createNeedInCupboard(need);
             if(newNeed == null) {
                 return new ResponseEntity<>(HttpStatus.CONFLICT);
@@ -143,8 +140,6 @@ public class NeedController {
         } catch (IOException e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        
-
     }
 
     /**
@@ -156,11 +151,14 @@ public class NeedController {
      * ResponseEntity with HTTP status of NOT_FOUND if not found<br>
      * ResponseEntity with HTTP status of INTERNAL_SERVER_ERROR otherwise
      */
-    @PutMapping("")
-    public ResponseEntity<Need> updateNeed(@RequestBody Need need) {
+    @PutMapping("cupboard")
+    public ResponseEntity<Need> updateNeed(@RequestBody Need need, @RequestParam String username, @RequestParam String password) {
         LOG.info("PUT /needs " + need);
 
         try {
+            if(!authService.hasPermissionLevel(username, password, AuthLevel.ADMIN)) {
+                return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+            }
             Need updated = needService.updateNeedInCupboard(need);
             if(updated == null) {
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -180,7 +178,7 @@ public class NeedController {
      * ResponseEntity with HTTP status of NOT_FOUND if not found<br>
      * ResponseEntity with HTTP status of INTERNAL_SERVER_ERROR otherwise
      */
-    @DeleteMapping("/{id}")
+    @DeleteMapping("cupboard/{id}")
     public ResponseEntity<Need> deleteNeed(@PathVariable int id, @RequestParam String username, @RequestParam String password) {
         LOG.info("DELETE /needs/" + id);
 
@@ -201,13 +199,11 @@ public class NeedController {
     @GetMapping("funding-basket")
     public ResponseEntity<NeedCheckout> getNeedCheckout(@RequestParam String username, @RequestParam String password) {
         try {
-            if(authService.credentialsExist(username, password)) {
-                //this cant be null because the service creates a need checkout on get
-                NeedCheckout checkout = needService.getFundingBasket(username);
-                return new ResponseEntity<>(checkout, HttpStatus.OK);
-            } else {
+            if(!authService.hasPermissionLevel(username, password, AuthLevel.USER)) {
                 return new ResponseEntity<>(HttpStatus.FORBIDDEN);
             }
+            NeedCheckout checkout = needService.getFundingBasket(username);
+            return new ResponseEntity<>(checkout, HttpStatus.OK);
         } catch (IOException e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -216,13 +212,11 @@ public class NeedController {
     @PutMapping("funding-basket")
     public ResponseEntity<NeedCheckout> addNeedToFundingBasket(@RequestBody int id, @RequestParam String username, @RequestParam String password) {
         try {
-            if(authService.credentialsExist(username, password)) {
-                //this cant be null because the service creates a need checkout on get
-                needService.addNeedToFundingBasket(username, id);
-                return new ResponseEntity<>(HttpStatus.OK);
-            } else {
+            if(!authService.hasPermissionLevel(username, password, AuthLevel.USER)) {
                 return new ResponseEntity<>(HttpStatus.FORBIDDEN);
             }
+            needService.addNeedToFundingBasket(username, id);
+            return new ResponseEntity<>(HttpStatus.OK);
         } catch (IOException e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -231,13 +225,12 @@ public class NeedController {
     @DeleteMapping("funding-basket")
     public ResponseEntity<NeedCheckout> removeNeedFromFundingBasket(@RequestBody int id, @RequestParam String username, @RequestParam String password) {
         try {
-            if(authService.credentialsExist(username, password)) {
-                //this cant be null because the service creates a need checkout on get
-                needService.removeNeedFromFundingBasket(username, id);
-                return new ResponseEntity<>(HttpStatus.OK);
-            } else {
+            if(!authService.hasPermissionLevel(username, password, AuthLevel.USER)) {
                 return new ResponseEntity<>(HttpStatus.FORBIDDEN);
             }
+            needService.removeNeedFromFundingBasket(username, id);
+            return new ResponseEntity<>(HttpStatus.OK);
+
         } catch (IOException e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
