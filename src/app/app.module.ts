@@ -3,25 +3,31 @@ import { BrowserModule } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { HeroesComponent } from './heroes/heroes.component';
+import { NeedsComponent } from './needs/needs.component';
 import { FormsModule } from '@angular/forms';
 import { UpperCasePipe } from '@angular/common';
-import { HeroDetailsComponent } from './hero-details/hero-details.component';
+import { NeedDetailsComponent } from './need-details/need-details.component';
 import { MessagesComponent } from './messages/messages.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
-import { HttpClient, HttpClientModule } from '@angular/common/http';
-import { HeroSearchComponent } from './hero-search/hero-search.component';
+import { HttpClientModule } from '@angular/common/http';
+import { NeedSearchComponent } from './need-search/need-search.component';
 import { LoginComponent } from './login/login.component';
+import { CupboardComponent } from './cupboard/cupboard.component';
+import { FundingBasketComponent } from './funding-basket/funding-basket.component';
+import { SupportComponent } from './support/support.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    HeroesComponent,
-    HeroDetailsComponent,
+    NeedsComponent,
+    NeedDetailsComponent,
     MessagesComponent,
     DashboardComponent,
-    HeroSearchComponent,
-    LoginComponent
+    NeedSearchComponent,
+    LoginComponent,
+    CupboardComponent,
+    FundingBasketComponent,
+    SupportComponent,
   ],
   imports: [
     BrowserModule,

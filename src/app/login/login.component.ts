@@ -1,4 +1,9 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { AuthCredentials } from '../login';
+import { LoginService } from '../login.service';
+import { MessageService } from '../message.service';
+import { SharedDataService } from '../shared-data.service';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-login',
@@ -9,13 +14,44 @@ import { Component } from '@angular/core';
 export class LoginComponent {
   username: string = '';
   password: string = '';
+  isLoggedIn: boolean = false;
+  
 
-  constructor() {}
+  constructor(private loginService: LoginService, 
+    private messageService: MessageService, private sharedDataService: SharedDataService) { }
 
-  login() {
-    // Here you can access this.username and this.password
-    // and perform authentication or any other actions
-    console.log('Username:', this.username);
-    console.log('Password:', this.password);
+  ngOnInit(): void {}
+
+  
+  getPermissionLevel(): string {
+    let permissionLevel: string = ''; 
+    this.loginService.getPermissionLevel(this.username, this.password)
+    .subscribe(permission => permissionLevel = permission);
+    console.log(`this is the perm level ${permissionLevel} thingy`);
+    
+    return permissionLevel;
+  }
+
+
+  login(): void {
+    this.loginService.authenticate(this.username, this.password).subscribe({
+      next: response => {
+        // Handle successful authentication
+        this.messageService.add('Authentication successful');
+        this.isLoggedIn = true;
+        this.sharedDataService.setUsername(this.username);
+        
+        this.sharedDataService.setPermissionLevel(this.getPermissionLevel());
+      },
+      error: err => {
+        // Handle authentication error
+        this.messageService.add('Authentication failed');
+      }
+    });
+  }
+
+  logout(): void{
+    this.isLoggedIn = false;
+    this.messageService.add(`${this.username} has logged out successfully`);
   }
 }

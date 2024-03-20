@@ -1,12 +1,17 @@
-<div class = "login">
+<div *ngIf = "!isLoggedIn"class = "login">
     <form (ngSubmit)="login()" #loginForm="ngForm">
         <label for="username">Username:</label><br>
-        <input type="text" name="username" ngModel><br>
+        <input type="text" name="username" [(ngModel)] = 'username' required><br>
         <label for="password">Password:</label><br>
-        <input type="password" name="password" ngModel><br>
+        <input type="password" name="password" [(ngModel)] = 'password' requirred><br>
         <span>
             <button type="submit">Login</button>
             <button type="submit">Create User</button>
         </span>       
     </form>
+</div>
+
+<div *ngIf="isLoggedIn">
+    <h2>Welcome {{username}}!</h2>
+    <button type="button" (click)="logout()">Logout</button>
 </div>
