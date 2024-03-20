@@ -1,6 +1,7 @@
 package com.ufund.api.ufundapi.persistence;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.ufund.api.ufundapi.model.Need;
 import com.ufund.api.ufundapi.model.NeedCheckout;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
