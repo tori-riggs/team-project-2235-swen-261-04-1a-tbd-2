@@ -14,7 +14,7 @@ public interface NeedCheckoutDAO {
     NeedCheckout getNeedCheckout(String username) throws IOException;
     NeedCheckout[] getNeedCheckouts() throws IOException;
 
-    NeedCheckout createNeedCheckout(NeedCheckout need) throws IOException;
+    NeedCheckout createNeedCheckout(NeedCheckout needCheckout) throws IOException;
 
     NeedCheckout updateNeedCheckout(NeedCheckout needCheckout) throws IOException;
 }

@@ -28,7 +28,7 @@ public class NeedCheckout {
 
     public int[] getCheckoutIds() {return checkoutIds;}
 
-    public void setCheckoutIds(int[] getCheckoutIds) {this.checkoutIds = checkoutIds;}
+    public void setCheckoutIds(int[] checkoutIds) {this.checkoutIds = checkoutIds;}
 
     /**
      * {@inheritDoc}
