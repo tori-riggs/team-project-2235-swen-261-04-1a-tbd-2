@@ -1,1 +1,3 @@
-[]
+[
+    { "id": 1, "name": "socks", "cost": 5, "quantity": 100, "description": "keep feet warm" }
+]
