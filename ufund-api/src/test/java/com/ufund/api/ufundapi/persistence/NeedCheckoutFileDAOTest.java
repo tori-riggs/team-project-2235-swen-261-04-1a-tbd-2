@@ -101,4 +101,56 @@ public class NeedCheckoutFileDAOTest {
         assertEquals(actual.getCheckoutIds(), checkout.getCheckoutIds());
         assertEquals(actual.getUsername(), checkout.getUsername());
     }
+
+    @Test
+    public void testUpdateNeedCheckout() throws IOException {
+        int[] checkoutIds = {99, 100, 101};
+        NeedCheckout checkout = new NeedCheckout("Ingo", checkoutIds);
+
+        NeedCheckout result = assertDoesNotThrow(() -> needCheckoutFileDAO.updateNeedCheckout(checkout), "Unexpected exception thrown");
+
+        assertNotNull(result);
+        NeedCheckout actual = needCheckoutFileDAO.getNeedCheckout(checkout.getUsername());
+        assertEquals(actual, checkout);
+    }
+
+    @Test
+    public void testSaveException() throws IOException {
+        doThrow(new IOException())
+            .when(mockObjectMapper)
+                .writeValue(any(File.class), any(NeedCheckout[].class));
+        
+        int[] checkoutIds = {20};
+        NeedCheckout checkout = new NeedCheckout("Akari", checkoutIds);
+
+        assertThrows(IOException.class,
+                        () -> needCheckoutFileDAO.createNeedCheckout(checkout),
+                            "IOException not thrown");
+    }
+
+    @Test
+    public void testUpdateNeedCheckoutNotFound() {
+        int[] checkoutIds = {20, 93, 94};
+        NeedCheckout checkout = new NeedCheckout("Akari", checkoutIds);
+
+        NeedCheckout result 
+            = assertDoesNotThrow(
+                () -> needCheckoutFileDAO.updateNeedCheckout(checkout),
+                    "Unexpected exception thrown");
+        
+        assertNull(result);
+    }
+
+    @Test
+    public void testConstructorException() throws IOException {
+        ObjectMapper mockObjectMapper = mock(ObjectMapper.class);
+
+        doThrow(new IOException())
+            .when(mockObjectMapper)
+                .readValue(new File("test.txt"), NeedCheckout[].class);
+
+        assertThrows(IOException.class, 
+                        () -> new NeedCheckoutFileDAO("test.txt", mockObjectMapper),
+                            "IOException not thrown");
+    }
 }
