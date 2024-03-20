@@ -17,7 +17,7 @@ public class AuthControllerTest {
     private AuthService authService;
 
     @BeforeEach
-    public void setupNeedController() {
+    public void setupAuthController() {
         authService = mock(AuthService.class);
         authController = new AuthController(authService);
     }

@@ -44,7 +44,7 @@ public class NeedService {
         //remove this id from each funding basket
         NeedCheckout[] fundingBaskets = needCheckoutDAO.getNeedCheckouts();
         for (NeedCheckout checkout: fundingBaskets) {
-
+            removeNeedFromFundingBasket(checkout.getUsername(), id);
         }
         return deleted;
     }

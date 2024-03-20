@@ -87,8 +87,8 @@ public class NeedFileDAOTest {
         
         assertEquals(result, true);
         // We check the internal tree map size against the length
-        // of the test heroes array - 1 (because of the delete)
-        // Because heroes attribute of HeroFileDAO is package private
+        // of the test needs array - 1 (because of the delete)
+        // Because need attribute of NeedFileDAO is package private
         // we can access it directly
         assertEquals(needFileDAO.needs.size(), testNeeds.length-1);
     }
@@ -107,6 +107,18 @@ public class NeedFileDAOTest {
     }
 
     @Test
+    public void testUpdateNeed() {
+        Need need = new Need(99, "Socks", 10, 20, "A pair of socks.");
+
+        Need result = assertDoesNotThrow(() -> needFileDAO.updateNeed(need), 
+                                            "Unexpected exception thrown");
+        
+        assertNotNull(result);
+        Need actual = needFileDAO.getNeed(need.getId());
+        assertEquals(actual, need);
+    }
+
+    @Test
     public void testSaveException() throws IOException {
         doThrow(new IOException())
             .when(mockObjectMapper)
@@ -119,13 +131,13 @@ public class NeedFileDAOTest {
     }
 
     @Test
-    public void testGetHeroNotFound() {
+    public void testGetNeedNotFound() {
         Need need = needFileDAO.getNeed(98);
         assertEquals(need, null);
     }
 
     @Test
-    public void testDeleteHeroNotFound() {
+    public void testDeleteNeedNotFound() {
         boolean result = assertDoesNotThrow(() -> needFileDAO.deleteNeed(98),
                                             "Unexpected exception thrown");
         

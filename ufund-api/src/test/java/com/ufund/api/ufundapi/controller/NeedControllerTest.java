@@ -7,9 +7,11 @@ import static org.mockito.Mockito.when;
 
 import java.io.IOException;
 
-import com.ufund.api.ufundapi.persistence.NeedDAO;
+import com.ufund.api.ufundapi.enums.AuthLevel;
 import com.ufund.api.ufundapi.model.Need;
 
+import com.ufund.api.ufundapi.service.AuthService;
+import com.ufund.api.ufundapi.service.NeedService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -24,7 +26,8 @@ import org.springframework.http.ResponseEntity;
 @Tag("Controller-tier")
 public class NeedControllerTest {
     private NeedController needController;
-    private NeedDAO mockNeedDAO;
+    private AuthService authService;
+    private NeedService needService;
 
     /**
      * Before each test, create a new NeedController object and inject
@@ -32,8 +35,9 @@ public class NeedControllerTest {
      */
     @BeforeEach
     public void setupNeedController() {
-        mockNeedDAO = mock(NeedDAO.class);
-        //needController = new NeedController(mockNeedDAO);
+        authService = mock(AuthService.class);
+        needService = mock(NeedService.class);
+        needController = new NeedController(needService, authService);
     }
 
     @Test
@@ -41,7 +45,7 @@ public class NeedControllerTest {
         // Setup
         Need need = new Need(99,"Mittens", 10, 5, "A pair of mittens.");
         // When the same id is passed in, our mock Need DAO will return the Need object
-        when(mockNeedDAO.getNeed(need.getId())).thenReturn(need);
+        when(needService.getNeedFromCupboard(need.getId())).thenReturn(need);
 
         // Invoke
         ResponseEntity<Need> response = needController.get(need.getId());
@@ -57,7 +61,7 @@ public class NeedControllerTest {
         int needId = 99;
         // When the same id is passed in, our mock Need DAO will return null, simulating
         // no need found
-        when(mockNeedDAO.getNeed(needId)).thenReturn(null);
+        when(needService.getNeedFromCupboard((needId))).thenReturn(null);
 
         // Invoke
         ResponseEntity<Need> response = needController.get(needId);
@@ -71,7 +75,7 @@ public class NeedControllerTest {
         // Setup
         int needId = 99;
         // When getNeed is called on the Mock Need DAO, throw an IOException
-        doThrow(new IOException()).when(mockNeedDAO).getNeed(needId);
+        doThrow(new IOException()).when(needService).getNeedFromCupboard(needId);
 
         // Invoke
         ResponseEntity<Need> response = needController.get(needId);
@@ -91,10 +95,11 @@ public class NeedControllerTest {
         Need need = new Need(95,"Socks", 7, 20, "A pair of socks.");
         // when createNeed is called, return true simulating successful
         // creation and save
-        when(mockNeedDAO.createNeed(need)).thenReturn(need);
+        when(needService.createNeedInCupboard(need)).thenReturn(need);
 
         // Invoke
-        ResponseEntity<Need> response = needController.createNeed(need);
+        when(authService.hasPermissionLevel("username", "password", AuthLevel.ADMIN)).thenReturn(true);
+        ResponseEntity<Need> response = needController.createNeed(need, "username", "password");
 
         // Analyze
         assertEquals(HttpStatus.CREATED,response.getStatusCode());
@@ -107,10 +112,11 @@ public class NeedControllerTest {
         Need need = new Need(95,"Socks", 7, 20, "A pair of socks.");
         // when createNeed is called, return false simulating failed
         // creation and save
-        when(mockNeedDAO.createNeed(need)).thenReturn(null);
+        when(needService.createNeedInCupboard(need)).thenReturn(null);
 
         // Invoke
-        ResponseEntity<Need> response = needController.createNeed(need);
+        when(authService.hasPermissionLevel("username", "password", AuthLevel.ADMIN)).thenReturn(true);
+        ResponseEntity<Need> response = needController.createNeed(need, "username", "password");
 
         // Analyze
         assertEquals(HttpStatus.CONFLICT,response.getStatusCode());
@@ -122,10 +128,11 @@ public class NeedControllerTest {
         Need need = new Need(95,"Socks", 7, 20, "A pair of socks.");
 
         // When createNeed is called on the Mock Need DAO, throw an IOException
-        doThrow(new IOException()).when(mockNeedDAO).createNeed(need);
+        doThrow(new IOException()).when(needService).createNeedInCupboard(need);
 
         // Invoke
-        ResponseEntity<Need> response = needController.createNeed(need);
+        when(authService.hasPermissionLevel("username", "password", AuthLevel.ADMIN)).thenReturn(true);
+        ResponseEntity<Need> response = needController.createNeed(need, "username", "password");
 
         // Analyze
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR,response.getStatusCode());
@@ -137,12 +144,15 @@ public class NeedControllerTest {
         Need need = new Need(95,"Socks", 7, 20, "A pair of socks.");
         // when updateNeed is called, return true simulating successful
         // update and save
-        when(mockNeedDAO.updateNeed(need)).thenReturn(need);
-        ResponseEntity<Need> response = needController.updateNeed(need);
+        when(authService.hasPermissionLevel("username", "password", AuthLevel.ADMIN)).thenReturn(true);
+
+        when(needService.updateNeedInCupboard(need)).thenReturn(need);
+        ResponseEntity<Need> response = needController.updateNeed(need, "username", "password");
         need.setCost(20);
 
         // Invoke
-        response = needController.updateNeed(need);
+        response = needController.updateNeed(need, "username", "password");
+
 
         // Analyze
         assertEquals(HttpStatus.OK,response.getStatusCode());
@@ -155,10 +165,11 @@ public class NeedControllerTest {
         Need need = new Need(95,"Socks", 7, 20, "A pair of socks.");
         // when updateNeed is called, return true simulating successful
         // update and save
-        when(mockNeedDAO.updateNeed(need)).thenReturn(null);
+        when(authService.hasPermissionLevel("username", "password", AuthLevel.ADMIN)).thenReturn(true);
+        when(needService.updateNeedInCupboard(need)).thenReturn(null);
 
         // Invoke
-        ResponseEntity<Need> response = needController.updateNeed(need);
+        ResponseEntity<Need> response = needController.updateNeed(need, "username", "password");
 
         // Analyze
         assertEquals(HttpStatus.NOT_FOUND,response.getStatusCode());
@@ -169,10 +180,11 @@ public class NeedControllerTest {
         // Setup
         Need need = new Need(95,"Socks", 7, 20, "A pair of socks.");
         // When updateNeed is called on the Mock Need DAO, throw an IOException
-        doThrow(new IOException()).when(mockNeedDAO).updateNeed(need);
+        doThrow(new IOException()).when(needService).updateNeedInCupboard(need);
 
         // Invoke
-        ResponseEntity<Need> response = needController.updateNeed(need);
+        when(authService.hasPermissionLevel("username", "password", AuthLevel.ADMIN)).thenReturn(true);
+        ResponseEntity<Need> response = needController.updateNeed(need, "username", "password");
 
         // Analyze
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR,response.getStatusCode());
@@ -186,7 +198,7 @@ public class NeedControllerTest {
         needs[1] = new Need(96,"Socks2", 8, 21, "A pair of socks2.");
         needs[1] = new Need(99,"Mittens", 10, 5, "A pair of mittens.");
         // When getNeeds is called return the needs created above
-        when(mockNeedDAO.getNeeds()).thenReturn(needs);
+        when(needService.getNeedsFromCupboard()).thenReturn(needs);
 
         // Invoke
         ResponseEntity<Need[]> response = needController.getNeeds();
@@ -200,7 +212,7 @@ public class NeedControllerTest {
     public void testGetNeedsHandleException() throws IOException { // getNeeds may throw IOException
         // Setup
         // When getNeeds is called on the Mock Need DAO, throw an IOException
-        doThrow(new IOException()).when(mockNeedDAO).getNeeds();
+        doThrow(new IOException()).when(needService).getNeedsFromCupboard();
 
         // Invoke
         ResponseEntity<Need[]> response = needController.getNeeds();
@@ -219,7 +231,7 @@ public class NeedControllerTest {
         needs[1] = new Need(99,"Mittens", 10, 5, "A pair of mittens.");
         // When findNeeds is called with the search string, return the two
         /// needs above
-        when(mockNeedDAO.findNeeds(searchString)).thenReturn(needs);
+        when(needService.findMatchingNeedsFromCupboard(searchString)).thenReturn(needs);
 
         // Invoke
         ResponseEntity<Need[]> response = needController.searchNeeds(searchString);
@@ -234,7 +246,7 @@ public class NeedControllerTest {
         // Setup
         String searchString = "an";
         // When createNeed is called on the Mock Need DAO, throw an IOException
-        doThrow(new IOException()).when(mockNeedDAO).findNeeds(searchString);
+        doThrow(new IOException()).when(needService).findMatchingNeedsFromCupboard(searchString);
 
         // Invoke
         ResponseEntity<Need[]> response = needController.searchNeeds(searchString);
@@ -248,13 +260,14 @@ public class NeedControllerTest {
         // Setup
         int needId = 99;
         // when deleteNeed is called return true, simulating successful deletion
-        when(mockNeedDAO.deleteNeed(needId)).thenReturn(true);
+        when(authService.hasPermissionLevel("username", "password", AuthLevel.ADMIN)).thenReturn(true);
+        when(needService.deleteNeedFromCupboard(needId)).thenReturn(true);
 
         // Invoke
-        //ResponseEntity<Need> response = needController.deleteNeed(needId);
+        ResponseEntity<Need> response = needController.deleteNeed(needId, "username", "password");
 
         // Analyze
-        //assertEquals(HttpStatus.OK,response.getStatusCode());
+        assertEquals(HttpStatus.OK,response.getStatusCode());
     }
 
     @Test
@@ -262,13 +275,14 @@ public class NeedControllerTest {
         // Setup
         int needId = 99;
         // when deleteNeed is called return false, simulating failed deletion
-        when(mockNeedDAO.deleteNeed(needId)).thenReturn(false);
+        when(needService.deleteNeedFromCupboard(needId)).thenReturn(false);
 
         // Invoke
-        //ResponseEntity<Need> response = needController.deleteNeed(needId);
+        when(authService.hasPermissionLevel("username", "password", AuthLevel.ADMIN)).thenReturn(true);
+        ResponseEntity<Need> response = needController.deleteNeed(needId, "username", "password");
 
         // Analyze
-        //assertEquals(HttpStatus.NOT_FOUND,response.getStatusCode());
+        assertEquals(HttpStatus.NOT_FOUND,response.getStatusCode());
     }
 
     @Test
@@ -276,12 +290,13 @@ public class NeedControllerTest {
         // Setup
         int needId = 99;
         // When deleteNeed is called on the Mock Need DAO, throw an IOException
-        doThrow(new IOException()).when(mockNeedDAO).deleteNeed(needId);
+        doThrow(new IOException()).when(needService).deleteNeedFromCupboard(needId);
 
         // Invoke
-        //ResponseEntity<Need> response = needController.deleteNeed(needId);
+        when(authService.hasPermissionLevel("username", "password", AuthLevel.ADMIN)).thenReturn(true);
+        ResponseEntity<Need> response = needController.deleteNeed(needId, "username", "password");
 
         // Analyze
-        //assertEquals(HttpStatus.INTERNAL_SERVER_ERROR,response.getStatusCode());
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR,response.getStatusCode());
     }
 }
