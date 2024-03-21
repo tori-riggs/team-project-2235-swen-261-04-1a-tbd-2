@@ -5,6 +5,7 @@ import { Injectable } from '@angular/core';
 })
 export class SharedDataService {
   private username: string = '';
+  private password: string = '';
   private permissionLevel: string = '';
 
   constructor() { }
@@ -15,6 +16,14 @@ export class SharedDataService {
 
   getUsername(): string {
     return this.username;
+  }
+
+  setPassword(password: string): void {
+    this.password = password;
+  }
+
+  getPassword(): string {
+    return this.password;
   }
 
   setPermissionLevel(permissionLevel: string): void {

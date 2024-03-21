@@ -30,14 +30,4 @@ export class NeedDetailsComponent implements OnInit {
     this.needService.getNeedFromCupboard(id).subscribe(need => this.need = need);
   }
 
-  goBack(): void {
-    this.location.back();
-  }
-
-  save(): void {
-    if (this.need) {
-      this.needService.updateNeedInCupboard(this.need)
-        .subscribe(() => this.goBack());
-    }
-  }
 }

@@ -9,6 +9,8 @@ import {
   NgFor,
   /* . . . */
 } from '@angular/common';
+import { NeedCheckout } from '../needs-checkout';
+import { NeedsCheckoutService } from '../needs-checkout.service';
 
 @Component({
   selector: 'app-needs',
@@ -17,14 +19,17 @@ import {
 })
 export class NeedsComponent implements OnInit {
   needs: Need[] = [];
+  needCheckout: NeedCheckout[] = [];
   selectedNeed?: Need;
   username: string = this.sharedDataService.getUsername();
+  password: string = this.sharedDataService.getPassword();
   permissionLevel: string = this.sharedDataService.getPermissionLevel();
   editing: boolean = false;
   creating: boolean = false;
   
-  constructor(private needService: NeedService, 
+  constructor(private needCheckoutService: NeedsCheckoutService, private needService: NeedService, 
     private messageService: MessageService, private sharedDataService: SharedDataService) { }
+
 
   onSelect(need: Need): void {
       this.selectedNeed = need;
@@ -43,7 +48,7 @@ export class NeedsComponent implements OnInit {
   
   update(need: Need): void {
     if (need) {
-      this.needService.updateNeedInCupboard(need)
+      this.needService.updateNeedInCupboard(need, this.username, this.password)
         .subscribe();
     }
     this.editing = false;
@@ -58,17 +63,34 @@ export class NeedsComponent implements OnInit {
     this.creating = true;
   }
 
-  add(name: string): void {
+  add(name: string, cost: any, quantity: any, description: string): void {
     name = name.trim();
-    if (!name) { return; }
-    this.needService.createNeedInCupboard({ name } as Need)
+    description = description.trim();
+    //
+    if (isNaN(parseInt(cost)) || isNaN(parseInt(quantity)) || !name || !description ) { return; }
+    this.needService.createNeedInCupboard({ name, cost, quantity, description } as Need, this.username, this.password)
       .subscribe(need => {
         this.needs.push(need);
       });
   }
 
+  addToCart(id: number){
+    this.needCheckoutService.addNeedToFundingBasket(this.username, id, this.password).subscribe(
+      needCheckout => {
+        // Construct a new NeedCheckout object with updated checkoutIds
+        const updatedNeedCheckout: NeedCheckout = {
+          username: this.username,
+          checkoutIDs: [...needCheckout.checkoutIDs, id] 
+        };
+  
+        // Push the updated NeedCheckout object into the needCheckout array
+        this.needCheckout.push(updatedNeedCheckout);
+      });
+      console.log("does it get here?")
+  }
+
   delete(need: Need): void {
     this.needs = this.needs.filter(n => n !== need);
-    this.needService.deleteNeedFromCupboard(need.id).subscribe();
+    this.needService.deleteNeedFromCupboard(need.id, this.username, this.password).subscribe();
   }
 }

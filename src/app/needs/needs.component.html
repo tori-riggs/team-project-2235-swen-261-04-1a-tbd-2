@@ -1,19 +1,17 @@
-<!--
-    //mock-comment
-<div>
+
+<div *ngIf="username === 'admin'">
     <label for="new-need">Need name: </label>
     <input id="new-need" #needName />
     <label for="new-need">Need cost: </label>
-    <input id="new-need" #needCost />
+    <input type = "number" id="new-need" #needCost />
     <label for="new-need">Need quantity: </label>
-    <input id="new-need" #needQuantity />
+    <input type = "number" id="new-need" #needQuantity />
     <label for="new-need">Need description: </label>
     <input id="new-need" #needDescription />
-    (click) passes input value to add() and then clears the input
-    <button type="button" class="add-button" (click)="add(needName.value); needName.value=''">
+    <button type="button" class="add-button" (click)="add(needName.value, needCost.value, needQuantity.value, needDescription.value); needName.value=''; needCost.value=''; needQuantity.value=''; needDescription.value=''">
             Add need
     </button>
-</div>-->
+</div>
 
 
 <ul class="needs">
@@ -27,7 +25,7 @@
                 <div>quantity: {{need.quantity}}</div>
                 <div>description: {{need.description}}</div>
             </a>       
-            <button type="button" class="add" title="add need to cart"(click)="delete(need)">add to cart</button>
+            <button type="button" class="add" title="add need to cart"(click)="addToCart(need.id)">add to cart</button>
         </div>
 
         <div *ngIf="username === 'admin';">
@@ -48,16 +46,17 @@
             </div>
         </div>
 
-        <ng-template #editForm>           
+        <ng-template #editForm>
             <div *ngIf="selectedNeed && editing">
-                <div>id: {{selectedNeed.id}}</div>
-                <input [(ngModel)]="selectedNeed.name" placeholder=`selectedNeed.id`>
-                <input [(ngModel)]="selectedNeed.cost" placeholder=`selectedNeed.cost`>
-                <input [(ngModel)]="selectedNeed.quantity" placeholder=`selectedNeed.quantity`>
-                <input [(ngModel)]="selectedNeed.description" placeholder=`selectedNeed.description`>
+              <div>id: {{selectedNeed.id}}</div>
+              <input [(ngModel)]="selectedNeed.name" placeholder="{{selectedNeed.name}}">
+              <input [(ngModel)]="selectedNeed.cost" placeholder="{{selectedNeed.cost}}">
+              <input [(ngModel)]="selectedNeed.quantity" placeholder="{{selectedNeed.quantity}}">
+              <input [(ngModel)]="selectedNeed.description" placeholder="{{selectedNeed.description}}">
             </div>
             <button type="button" class="update" title="update need" (click)="update(need)">update</button>
-        </ng-template>
+          </ng-template>
+          
         
         <div *ngIf="username !== 'user' && username !== 'admin'">
             <a >

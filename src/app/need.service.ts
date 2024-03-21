@@ -41,36 +41,35 @@ export class NeedService {
 
     // Function to find matching needs from the cupboard based on name
     findMatchingNeedsFromCupboard(name: string): Observable<Need[]> {
-        const url = `${this.needsUrl}?name=${name}`;
+        const url = `${this.needsUrl}/?name=${name}`;
         return this.http.get<Need[]>(url).pipe(
             catchError(this.handleError<Need[]>('findMatchingNeedsFromCupboard'))
         );
     }
 
     // Function to create a new need in the cupboard
-    createNeedInCupboard(need: Need): Observable<Need> {
-        const url = `${this.needsUrl}`;
+    createNeedInCupboard(need: Need, username: string, password: string): Observable<Need> {
+        const url = `${this.needsUrl}?username=${username}&password=${password}`
         return this.http.post<Need>(url, need).pipe(
             catchError(this.handleError<Need>('createNeedInCupboard'))
         );
     }
 
     // Function to update a need in the cupboard
-    updateNeedInCupboard(need: Need): Observable<Need> {
-        const url = `${this.needsUrl}/${need.id}`;
+    updateNeedInCupboard(need: Need, username: string, password: string): Observable<Need> {
+        const url = `${this.needsUrl}?username=${username}&password=${password}`
         return this.http.put<Need>(url, need).pipe(
             catchError(this.handleError<Need>('updateNeedInCupboard'))
         );
     }
 
     // Function to delete a need from the cupboard
-    deleteNeedFromCupboard(id: number): Observable<boolean> {
-        const url = `${this.needsUrl}/${id}`;
+    deleteNeedFromCupboard(id: number, username: string, password: string): Observable<boolean> {
+        const url = `${this.needsUrl}/${id}?username=${username}&password=${password}`;
         return this.http.delete<boolean>(url).pipe(
             catchError(this.handleError<boolean>('deleteNeedFromCupboard'))
         );
     }
-
 
     /** Log a HeroService message with the MessageService */
     private log(message: string) {

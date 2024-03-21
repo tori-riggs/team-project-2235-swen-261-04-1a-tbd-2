@@ -40,7 +40,8 @@ export class LoginComponent {
         this.messageService.add('Authentication successful');
         this.isLoggedIn = true;
         this.sharedDataService.setUsername(this.username);
-        
+        this.sharedDataService.setPassword(this.password);
+
         this.sharedDataService.setPermissionLevel(this.getPermissionLevel());
       },
       error: err => {
