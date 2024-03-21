@@ -16,7 +16,7 @@
 
 <ul class="needs">
     <div *ngFor="let need of needs">
-        <div *ngIf="username === 'user';">
+        <div *ngIf="permissionLevel === 'USER';">
             <a>
                 <span class="badge">{{need.id}}:</span>
                 {{need.name}}
@@ -28,7 +28,7 @@
             <button type="button" class="add" title="add need to cart"(click)="addToCart(need.id)">add to cart</button>
         </div>
 
-        <div *ngIf="username === 'admin';">
+        <div *ngIf="permissionLevel === 'ADMIN';">
             <div *ngIf="!editing || selectedNeed !== need; else editForm">
                 <a >
                     <span class="badge">{{need.id}}:</span>
@@ -58,7 +58,7 @@
           </ng-template>
           
         
-        <div *ngIf="username !== 'user' && username !== 'admin'">
+        <div *ngIf="permissionLevel !== 'USER' && permissionLevel !== 'ADMIN'">
             <a >
                 <span class="badge">{{need.id}}:</span>
                 {{need.name}}

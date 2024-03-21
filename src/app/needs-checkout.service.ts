@@ -21,15 +21,18 @@ export class NeedsCheckoutService {
     constructor(private http: HttpClient, private messageService: MessageService) { }
 
   getFundingBasket(username: string, password: string): Observable<NeedCheckout> {
-    return this.http.get<NeedCheckout>(`${this.needsCheckoutUrl}?username=${username}&password=${password}`);
+    return this.http.get<NeedCheckout>(`${this.needsCheckoutUrl}?username=${username}&password=${password}`)
+    .pipe(catchError(this.handleError<NeedCheckout>('getFundingBasket')));
   }
 
   addNeedToFundingBasket(username: string, id: number, password: string): Observable<NeedCheckout> {
-    return this.http.put<NeedCheckout>(`${this.needsCheckoutUrl}/${id}?username=${username}&password=${password}`, id);
+    return this.http.put<NeedCheckout>(`${this.needsCheckoutUrl}?username=${username}&password=${password}`, id)
+    .pipe(catchError(this.handleError<NeedCheckout>('addNeedToFundingBasket')));
   }
 
   removeNeedFromFundingBasket(username: string, id: number, password: string): Observable<NeedCheckout> {
-    return this.http.delete<NeedCheckout>(`${this.needsCheckoutUrl}/${id}?username=${username}&password=${password}`);
+    return this.http.delete<NeedCheckout>(`${this.needsCheckoutUrl}?username=${username}&password=${password}/${id}`)
+    .pipe(catchError(this.handleError<NeedCheckout>('removeNeedToFundingBasket')));
   }
 
 

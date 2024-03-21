@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { Need } from '../need';
 import { NeedService } from '../need.service';
 import { MessageService } from '../message.service';
-import { SharedDataService } from '../shared-data.service';
 
 import {
   /* . . . */
@@ -21,14 +20,14 @@ export class NeedsComponent implements OnInit {
   needs: Need[] = [];
   needCheckout: NeedCheckout[] = [];
   selectedNeed?: Need;
-  username: string = this.sharedDataService.getUsername();
-  password: string = this.sharedDataService.getPassword();
-  permissionLevel: string = this.sharedDataService.getPermissionLevel();
+  username: string = localStorage.getItem("username") ?? "";
+  password: string = localStorage.getItem("password") ?? "";
+  permissionLevel: string = localStorage.getItem("perms") ?? "";
   editing: boolean = false;
   creating: boolean = false;
   
   constructor(private needCheckoutService: NeedsCheckoutService, private needService: NeedService, 
-    private messageService: MessageService, private sharedDataService: SharedDataService) { }
+    private messageService: MessageService) { }
 
 
   onSelect(need: Need): void {
@@ -80,13 +79,13 @@ export class NeedsComponent implements OnInit {
         // Construct a new NeedCheckout object with updated checkoutIds
         const updatedNeedCheckout: NeedCheckout = {
           username: this.username,
-          checkoutIDs: [...needCheckout.checkoutIDs, id] 
+          checkoutIDs: [...needCheckout?.checkoutIDs ?? [], id]
         };
   
         // Push the updated NeedCheckout object into the needCheckout array
         this.needCheckout.push(updatedNeedCheckout);
       });
-      console.log("does it get here?")
+      console.log("worked?");
   }
 
   delete(need: Need): void {

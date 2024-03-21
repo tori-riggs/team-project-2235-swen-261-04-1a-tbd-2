@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { AuthCredentials } from '../login';
 import { LoginService } from '../login.service';
 import { MessageService } from '../message.service';
-import { SharedDataService } from '../shared-data.service';
 import { Observable } from 'rxjs';
 
 @Component({
@@ -12,37 +11,40 @@ import { Observable } from 'rxjs';
 })
 
 export class LoginComponent {
-  username: string = '';
-  password: string = '';
+  username: string = localStorage.getItem("username") ?? "";
+  password: string = localStorage.getItem("password") ?? "";
+  permissionLevel: string = localStorage.getItem("perms") ?? "";
   isLoggedIn: boolean = false;
   
 
   constructor(private loginService: LoginService, 
-    private messageService: MessageService, private sharedDataService: SharedDataService) { }
+    private messageService: MessageService) 
+    {
+      this.isLoggedIn = window.localStorage.getItem("using") === "true";
+     }
 
   ngOnInit(): void {}
 
+
   
-  getPermissionLevel(): string {
-    let permissionLevel: string = ''; 
-    this.loginService.getPermissionLevel(this.username, this.password)
-    .subscribe(permission => permissionLevel = permission);
-    console.log(`this is the perm level ${permissionLevel} thingy`);
-    
-    return permissionLevel;
+  getPermissionLevel(): void { 
+    this.loginService.getPermissionLevel(this.username, this.password).subscribe(
+      permission => this.permissionLevel = permission
+    );
   }
 
 
   login(): void {
     this.loginService.authenticate(this.username, this.password).subscribe({
       next: response => {
+        this.getPermissionLevel();
         // Handle successful authentication
         this.messageService.add('Authentication successful');
+        localStorage.setItem("username", this.username)
+        localStorage.setItem("password", this.password)
+        localStorage.setItem("perms", this.permissionLevel)
+        localStorage.setItem("using", "true")
         this.isLoggedIn = true;
-        this.sharedDataService.setUsername(this.username);
-        this.sharedDataService.setPassword(this.password);
-
-        this.sharedDataService.setPermissionLevel(this.getPermissionLevel());
       },
       error: err => {
         // Handle authentication error
@@ -52,7 +54,13 @@ export class LoginComponent {
   }
 
   logout(): void{
+    localStorage.setItem("username", "")
+    localStorage.setItem("password", "")
+    localStorage.setItem("perms", "guest")
+    localStorage.setItem("using", "false")
     this.isLoggedIn = false;
+    this.username = ''
+    this.password = ''
     this.messageService.add(`${this.username} has logged out successfully`);
   }
 }

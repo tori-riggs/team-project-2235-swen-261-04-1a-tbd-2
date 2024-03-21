@@ -1,6 +1,17 @@
-<div class = "funding-basket">
+<div *ngIf="permissionLevel === 'USER';" class = "funding-basket">
     <h3 class = "label">Funding Basket</h3>
-    <div class = "needs-storage">
-        
+    <div class = "needs-storage"> 
+        <div>
+            <div *ngFor="let need of needs">
+                <a>
+                    <span class="badge">{{username}} Funding Basket:</span>
+                    <div>id: {{need.id}}</div>
+                    <div>cost: {{need.cost}}</div>
+                    <div>quantity: {{need.quantity}}</div>
+                    <div>description: {{need.description}}</div>
+                </a>       
+                <button type="button" class="add" title="add need to cart"(click)="addToCart(need.id)">add to cart</button>
+            </div>
+        </div>
     </div>
 </div>

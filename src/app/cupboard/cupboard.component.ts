@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
 import { LoginService } from '../login.service';
 import { MessageService } from '../message.service';
-import { SharedDataService } from '../shared-data.service';
 
 @Component({
   selector: 'app-cupboard',
@@ -9,10 +8,11 @@ import { SharedDataService } from '../shared-data.service';
   styleUrl: './cupboard.component.css'
 })
 export class CupboardComponent {
-  username: string = this.sharedDataService.getUsername();
+  username: string = localStorage.getItem("username") ?? "";
+  permissionLevel: string = localStorage.getItem("perms") ?? "";
   
   constructor(private loginService: LoginService, 
-    private messageService: MessageService,private sharedDataService:SharedDataService) { }
+    private messageService: MessageService) { }
 
   
 }
