@@ -223,7 +223,7 @@ public class NeedController {
     }
 
     @DeleteMapping("funding-basket")
-    public ResponseEntity<NeedCheckout> removeNeedFromFundingBasket(@RequestBody int id, @RequestParam String username, @RequestParam String password) {
+    public ResponseEntity<NeedCheckout> removeNeedFromFundingBasket(@RequestParam int id, @RequestParam String username, @RequestParam String password) {
         try {
             if(!authService.hasPermissionLevel(username, password, AuthLevel.USER)) {
                 return new ResponseEntity<>(HttpStatus.FORBIDDEN);
