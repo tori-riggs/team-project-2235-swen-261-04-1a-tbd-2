@@ -1,4 +1,4 @@
 export interface NeedCheckout {
     username: string;
-    checkoutIDs: number [];
+    checkoutIds: number [];
 }

@@ -19,6 +19,7 @@ export class NeedSearchComponent {
   constructor(private needService: NeedService) {}
 
   search(term: string): void {
+    localStorage.setItem("search",term);
     this.searchTerms.next(term);
   }
 

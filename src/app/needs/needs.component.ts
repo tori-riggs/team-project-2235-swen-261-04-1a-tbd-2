@@ -18,13 +18,15 @@ import { NeedsCheckoutService } from '../needs-checkout.service';
 })
 export class NeedsComponent implements OnInit {
   needs: Need[] = [];
-  needCheckout: NeedCheckout[] = [];
+  needCheckout?: NeedCheckout;
+  checkoutIDs?: number[];
   selectedNeed?: Need;
   username: string = localStorage.getItem("username") ?? "";
   password: string = localStorage.getItem("password") ?? "";
   permissionLevel: string = localStorage.getItem("perms") ?? "";
   editing: boolean = false;
   creating: boolean = false;
+  term?: string = localStorage.getItem("search") ?? "";
   
   constructor(private needCheckoutService: NeedsCheckoutService, private needService: NeedService, 
     private messageService: MessageService) { }
@@ -35,13 +37,16 @@ export class NeedsComponent implements OnInit {
       this.messageService.add(`NeedsComponent: Selected need id=${need.id}`);
   }
 
-  getNeeds(): void {
-    this.needService.getNeedsFromCupboard()
-      .subscribe(needs => this.needs = needs);
+  getNeeds(): void { 
+      this.needService.getNeedsFromCupboard()
+      .subscribe(needs => {
+        this.needs = needs
+      });
       this.messageService.add(`permlevel=${this.permissionLevel}`);
   }
 
   ngOnInit(): void {
+    localStorage.setItem("search","")
     this.getNeeds();
   }
   
@@ -66,7 +71,7 @@ export class NeedsComponent implements OnInit {
     name = name.trim();
     description = description.trim();
     //
-    if (isNaN(parseInt(cost)) || isNaN(parseInt(quantity)) || !name || !description ) { return; }
+    if (isNaN(parseInt(cost)) || isNaN(parseInt(quantity)) || !name || !description || cost <=0 || quantity <= 0) { return; }
     this.needService.createNeedInCupboard({ name, cost, quantity, description } as Need, this.username, this.password)
       .subscribe(need => {
         this.needs.push(need);
@@ -75,17 +80,10 @@ export class NeedsComponent implements OnInit {
 
   addToCart(id: number){
     this.needCheckoutService.addNeedToFundingBasket(this.username, id, this.password).subscribe(
-      needCheckout => {
-        // Construct a new NeedCheckout object with updated checkoutIds
-        const updatedNeedCheckout: NeedCheckout = {
-          username: this.username,
-          checkoutIDs: [...needCheckout?.checkoutIDs ?? [], id]
-        };
-  
-        // Push the updated NeedCheckout object into the needCheckout array
-        this.needCheckout.push(updatedNeedCheckout);
+      checkout => {
+        this.needCheckout = checkout; // Update needCheckout after adding
+        this.needCheckoutService.emitAddToCartEvent();
       });
-      console.log("worked?");
   }
 
   delete(need: Need): void {

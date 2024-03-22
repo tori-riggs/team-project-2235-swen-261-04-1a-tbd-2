@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { EventEmitter, Injectable } from '@angular/core';
 import { Need } from './need';
 import { NEEDS } from './mock-needs';
 import { Observable, of } from 'rxjs';
@@ -11,9 +11,7 @@ import { catchError, map, tap } from 'rxjs/operators';
     providedIn: 'root'
 })
 export class NeedService {
-
     private needsUrl = 'http://localhost:8080/needs/cupboard'// URL to web API
-    private needsCheckoutUrl = 'http://localhost:8080/needs/cupboard'
 
     httpOptions = {
         headers: new HttpHeaders({ 'Content-Type': 'application/json' })

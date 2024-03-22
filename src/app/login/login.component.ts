@@ -35,9 +35,9 @@ export class LoginComponent {
 
 
   login(): void {
+    this.getPermissionLevel();
     this.loginService.authenticate(this.username, this.password).subscribe({
       next: response => {
-        this.getPermissionLevel();
         // Handle successful authentication
         this.messageService.add('Authentication successful');
         localStorage.setItem("username", this.username)
@@ -58,9 +58,9 @@ export class LoginComponent {
     localStorage.setItem("password", "")
     localStorage.setItem("perms", "guest")
     localStorage.setItem("using", "false")
+    this.messageService.add(`${this.username} has logged out successfully`);
     this.isLoggedIn = false;
     this.username = ''
     this.password = ''
-    this.messageService.add(`${this.username} has logged out successfully`);
   }
 }

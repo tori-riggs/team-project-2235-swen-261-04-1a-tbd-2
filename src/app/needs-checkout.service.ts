@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { EventEmitter, Injectable } from '@angular/core';
 import { Need } from './need';
 import { NEEDS } from './mock-needs';
 import { Observable, of } from 'rxjs';
@@ -11,7 +11,7 @@ import { NeedCheckout } from './needs-checkout';
   providedIn: 'root'
 })
 export class NeedsCheckoutService {
-
+  addToCartEvent: EventEmitter<void> = new EventEmitter<void>();
   private needsCheckoutUrl = 'http://localhost:8080/needs/funding-basket'
 
     httpOptions = {
@@ -31,8 +31,13 @@ export class NeedsCheckoutService {
   }
 
   removeNeedFromFundingBasket(username: string, id: number, password: string): Observable<NeedCheckout> {
-    return this.http.delete<NeedCheckout>(`${this.needsCheckoutUrl}?username=${username}&password=${password}/${id}`)
+    console.log(`${id}`)
+    return this.http.delete<NeedCheckout>(`${this.needsCheckoutUrl}?id=${id}&username=${username}&password=${password}`)
     .pipe(catchError(this.handleError<NeedCheckout>('removeNeedToFundingBasket')));
+  }
+
+  emitAddToCartEvent(): void {
+    this.addToCartEvent.emit();
   }
 
 

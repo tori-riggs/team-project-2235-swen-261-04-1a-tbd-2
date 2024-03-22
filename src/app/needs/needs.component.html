@@ -1,16 +1,16 @@
 
-<div *ngIf="username === 'admin'">
+<div *ngIf="permissionLevel === 'ADMIN'">
     <label for="new-need">Need name: </label>
-    <input id="new-need" #needName />
+    <input id="new-need" #needName /><br>
     <label for="new-need">Need cost: </label>
-    <input type = "number" id="new-need" #needCost />
+    <input type = "number" id="new-need" #needCost /><br>
     <label for="new-need">Need quantity: </label>
-    <input type = "number" id="new-need" #needQuantity />
+    <input type = "number" id="new-need" #needQuantity /><br>
     <label for="new-need">Need description: </label>
-    <input id="new-need" #needDescription />
+    <input id="new-need" #needDescription /><br>
     <button type="button" class="add-button" (click)="add(needName.value, needCost.value, needQuantity.value, needDescription.value); needName.value=''; needCost.value=''; needQuantity.value=''; needDescription.value=''">
             Add need
-    </button>
+    </button><br>
 </div>
 
 
@@ -18,22 +18,19 @@
     <div *ngFor="let need of needs">
         <div *ngIf="permissionLevel === 'USER';">
             <a>
-                <span class="badge">{{need.id}}:</span>
                 {{need.name}}
-                <div>id: {{need.id}}</div>
                 <div>cost: {{need.cost}}</div>
                 <div>quantity: {{need.quantity}}</div>
                 <div>description: {{need.description}}</div>
             </a>       
+            <button type="button" class="add" title="add need to cart"(click)="getNeeds()">getneeds test</button>
             <button type="button" class="add" title="add need to cart"(click)="addToCart(need.id)">add to cart</button>
         </div>
 
         <div *ngIf="permissionLevel === 'ADMIN';">
             <div *ngIf="!editing || selectedNeed !== need; else editForm">
                 <a >
-                    <span class="badge">{{need.id}}:</span>
                     {{need.name}}
-                    <div>id: {{need.id}}</div>
                     <div>cost: {{need.cost}}</div>
                     <div>quantity: {{need.quantity}}</div>
                     <div>description: {{need.description}}</div>
@@ -48,7 +45,6 @@
 
         <ng-template #editForm>
             <div *ngIf="selectedNeed && editing">
-              <div>id: {{selectedNeed.id}}</div>
               <input [(ngModel)]="selectedNeed.name" placeholder="{{selectedNeed.name}}">
               <input [(ngModel)]="selectedNeed.cost" placeholder="{{selectedNeed.cost}}">
               <input [(ngModel)]="selectedNeed.quantity" placeholder="{{selectedNeed.quantity}}">
@@ -60,9 +56,7 @@
         
         <div *ngIf="permissionLevel !== 'USER' && permissionLevel !== 'ADMIN'">
             <a >
-                <span class="badge">{{need.id}}:</span>
                 {{need.name}}
-                <div>id: {{need.id}}</div>
                 <div>cost: {{need.cost}}</div>
                 <div>quantity: {{need.quantity}}</div>
                 <div>description: {{need.description}}</div>
