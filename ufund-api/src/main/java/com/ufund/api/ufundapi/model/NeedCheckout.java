@@ -1,5 +1,6 @@
 package com.ufund.api.ufundapi.model;
 
+import java.util.Map;
 import java.util.logging.Logger;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -15,9 +16,9 @@ public class NeedCheckout {
     static final String STRING_FORMAT = "Need [username=%s, checkoutIds=%s]";
 
     @JsonProperty("username") private String username;
-    @JsonProperty("checkoutIds") private int[] checkoutIds;
+    @JsonProperty("checkoutIds") private Map<Integer, Integer> checkoutIds;
 
-    public NeedCheckout(@JsonProperty("username") String username, @JsonProperty("checkoutIds") int[] checkoutIds) {
+    public NeedCheckout(@JsonProperty("username") String username, @JsonProperty("checkoutIds") Map<Integer, Integer> checkoutIds) {
         this.username = username;
         this.checkoutIds = checkoutIds;
     }
@@ -26,9 +27,9 @@ public class NeedCheckout {
 
     public void setUsername(String username) {this.username = username;}
 
-    public int[] getCheckoutIds() {return checkoutIds;}
+    public Map<Integer, Integer> getCheckoutIds() {return checkoutIds;}
 
-    public void setCheckoutIds(int[] checkoutIds) {this.checkoutIds = checkoutIds;}
+    public void setCheckoutIds(Map<Integer, Integer> checkoutIds) {this.checkoutIds = checkoutIds;}
 
     /**
      * {@inheritDoc}

@@ -209,13 +209,14 @@ public class NeedController {
         }
     }
 
-    @PutMapping("funding-basket")
-    public ResponseEntity<NeedCheckout> addNeedToFundingBasket(@RequestBody int id, @RequestParam String username, @RequestParam String password) {
+    @PostMapping("funding-basket")
+    public ResponseEntity<NeedCheckout> addNeedToFundingBasket(@RequestParam int id, @RequestParam int quantity, @RequestParam String username, @RequestParam String password) {
+        LOG.info("add to funding basket");
         try {
             if(!authService.hasPermissionLevel(username, password, AuthLevel.USER)) {
                 return new ResponseEntity<>(HttpStatus.FORBIDDEN);
             }
-            needService.addNeedToFundingBasket(username, id);
+            needService.addNeedToFundingBasket(username, id, quantity);
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (IOException e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -223,7 +224,7 @@ public class NeedController {
     }
 
     @DeleteMapping("funding-basket")
-    public ResponseEntity<NeedCheckout> removeNeedFromFundingBasket(@RequestBody int id, @RequestParam String username, @RequestParam String password) {
+    public ResponseEntity<NeedCheckout> removeNeedFromFundingBasket(@RequestParam int id, @RequestParam String username, @RequestParam String password) {
         try {
             if(!authService.hasPermissionLevel(username, password, AuthLevel.USER)) {
                 return new ResponseEntity<>(HttpStatus.FORBIDDEN);
@@ -231,6 +232,19 @@ public class NeedController {
             needService.removeNeedFromFundingBasket(username, id);
             return new ResponseEntity<>(HttpStatus.OK);
 
+        } catch (IOException e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @PutMapping("funding-basket/checkout")
+    public ResponseEntity<NeedCheckout> checkout(@RequestParam String username, @RequestParam String password) {
+        try {
+            if(!authService.hasPermissionLevel(username, password, AuthLevel.USER)) {
+                return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+            }
+            needService.checkout(username);
+            return new ResponseEntity<>(HttpStatus.OK);
         } catch (IOException e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }

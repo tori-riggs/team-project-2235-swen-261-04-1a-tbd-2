@@ -7,7 +7,7 @@ import com.ufund.api.ufundapi.persistence.NeedDAO;
 import org.springframework.context.annotation.Configuration;
 
 import java.io.IOException;
-import java.util.Arrays;
+import java.util.HashMap;
 
 @Configuration
 public class NeedService {
@@ -52,34 +52,41 @@ public class NeedService {
     public NeedCheckout getFundingBasket(String username) throws IOException {
         NeedCheckout checkout = needCheckoutDAO.getNeedCheckout(username);
         if(checkout == null) {
-            checkout = needCheckoutDAO.createNeedCheckout(new NeedCheckout(username, new int[0]));
+            checkout = needCheckoutDAO.createNeedCheckout(new NeedCheckout(username, new HashMap<>()));
         }
         return checkout;
     }
 
-    public NeedCheckout addNeedToFundingBasket(String username, int id) throws IOException {
+    public NeedCheckout addNeedToFundingBasket(String username, int id, int quantity) throws IOException {
         //if there is no need checkout for username, create a new one
         NeedCheckout checkout = needCheckoutDAO.getNeedCheckout(username);
         if(checkout == null) {
-            checkout = needCheckoutDAO.createNeedCheckout(new NeedCheckout(username, new int[0]));
+            checkout = needCheckoutDAO.createNeedCheckout(new NeedCheckout(username, new HashMap<>()));
         }
-        //remove id if it's currently in there
-        checkout.setCheckoutIds(Arrays.stream(checkout.getCheckoutIds()).filter(x -> x!=id).toArray());
-        //add id to the need checkout
-        int[] newArray = new int[checkout.getCheckoutIds().length+1];
-        for(int i = 0; i<checkout.getCheckoutIds().length; i++) {
-            newArray[i] = checkout.getCheckoutIds()[i];
+        int currentQuantity = 0;
+        //add current quantity if the id is already in chcekout
+        if(checkout.getCheckoutIds().containsKey(id)) {
+            currentQuantity = checkout.getCheckoutIds().get(id);
         }
-        newArray[newArray.length-1] = id;
-        checkout.setCheckoutIds(newArray);
+        checkout.getCheckoutIds().put(id, quantity + currentQuantity);
         return needCheckoutDAO.updateNeedCheckout(checkout);
     }
 
     public NeedCheckout removeNeedFromFundingBasket(String username, int id) throws IOException {
         NeedCheckout checkout = needCheckoutDAO.getNeedCheckout(username);
         //if this need is in a cart, remove it
-        checkout.setCheckoutIds(Arrays.stream(checkout.getCheckoutIds()).filter(x -> x!=id).toArray());
+        if (checkout.getCheckoutIds().containsKey(id)) {
+            checkout.getCheckoutIds().remove(id);
+        }
         //update
+        return needCheckoutDAO.updateNeedCheckout(checkout);
+    }
+
+    public NeedCheckout checkout(String username) throws IOException {
+        NeedCheckout checkout = needCheckoutDAO.getNeedCheckout(username);
+        for (Integer checkoutId: checkout.getCheckoutIds().keySet()) {
+            checkout.getCheckoutIds().remove(checkoutId);
+        }
         return needCheckoutDAO.updateNeedCheckout(checkout);
     }
 }
