@@ -8,6 +8,8 @@ import org.springframework.context.annotation.Configuration;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 @Configuration
 public class NeedService {
@@ -84,8 +86,15 @@ public class NeedService {
 
     public NeedCheckout checkout(String username) throws IOException {
         NeedCheckout checkout = needCheckoutDAO.getNeedCheckout(username);
-        for (Integer checkoutId: checkout.getCheckoutIds().keySet()) {
-            checkout.getCheckoutIds().remove(checkoutId);
+        Iterator<Map.Entry<Integer, Integer>> iterator = checkout.getCheckoutIds().entrySet().iterator();
+        while (iterator.hasNext()) {
+            Map.Entry<Integer, Integer> entry = iterator.next();
+            Integer checkoutId = entry.getKey();
+            Integer quant = entry.getValue(); 
+            Need newNeed = needDAO.getNeed(checkoutId);
+            newNeed.setQuantity(newNeed.getQuantity() - quant); //changes quantity by how many things are in the cart
+            needDAO.updateNeed(newNeed);
+            iterator.remove(); //removes entry from the checkout area
         }
         return needCheckoutDAO.updateNeedCheckout(checkout);
     }

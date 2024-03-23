@@ -210,7 +210,7 @@ public class NeedController {
     }
 
     @PostMapping("funding-basket")
-    public ResponseEntity<NeedCheckout> addNeedToFundingBasket(@RequestParam int id, @RequestParam int quantity, @RequestParam String username, @RequestParam String password) {
+    public ResponseEntity<NeedCheckout> addNeedToFundingBasket(@RequestParam int id, @RequestBody int quantity, @RequestParam String username, @RequestParam String password) {
         LOG.info("add to funding basket");
         try {
             if(!authService.hasPermissionLevel(username, password, AuthLevel.USER)) {
