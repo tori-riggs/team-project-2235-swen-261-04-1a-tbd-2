@@ -30,7 +30,7 @@ import static org.mockito.Mockito.when;
 public class NeedCheckoutFileDAOTest {
     NeedCheckoutFileDAO needCheckoutFileDAO;
     NeedCheckout[] testNeedCheckoutArr;
-    int[][] checkoutIdsArr;
+    // int[][] checkoutIdsArr;
     Map<String, NeedCheckout> testNeedCheckoutMap;
     ObjectMapper mockObjectMapper;
     // String filename;
@@ -45,17 +45,25 @@ public class NeedCheckoutFileDAOTest {
         testNeedCheckoutMap = new HashMap<>();
         
         testNeedCheckoutArr = new NeedCheckout[3];
-        checkoutIdsArr = new int[3][];
-        int[] testCheckoutIdsArr1 = {90, 91, 92};
-        int[] testCheckoutIdsArr2 = {93, 94, 95};
-        int[] testCheckoutIdsArr3 = {96, 97, 98};
-        checkoutIdsArr[0] = testCheckoutIdsArr1;
-        checkoutIdsArr[1] = testCheckoutIdsArr2;
-        checkoutIdsArr[2] = testCheckoutIdsArr3;
+        // checkoutIdsArr = new int[3][];
+        Map<Integer, Integer> testCheckoutIdsArr1 = new HashMap<>();
+        testCheckoutIdsArr1.put(90, 1);
+        testCheckoutIdsArr1.put(91, 10);
+        testCheckoutIdsArr1.put(92, 5);
+        Map<Integer, Integer> testCheckoutIdsArr2 = new HashMap<>();
+        testCheckoutIdsArr2.put(93, 5);
+        testCheckoutIdsArr2.put(94, 2);
+        testCheckoutIdsArr2.put(95, 1);
+        Map<Integer, Integer> testCheckoutIdsArr3 = new HashMap<>();
+        testCheckoutIdsArr3.put(96, 3);
+        testCheckoutIdsArr3.put(97, 2);
+        testCheckoutIdsArr3.put(98, 10);
+        // checkoutIdsArr[1] = testCheckoutIdsArr2;
+        // checkoutIdsArr[2] = testCheckoutIdsArr3;
         
-        testNeedCheckoutArr[0] = new NeedCheckout("Ingo", checkoutIdsArr[0]);
-        testNeedCheckoutArr[1] = new NeedCheckout("Emmet", checkoutIdsArr[1]);
-        testNeedCheckoutArr[2] = new NeedCheckout("Elesa", checkoutIdsArr[2]);
+        testNeedCheckoutArr[0] = new NeedCheckout("Ingo", testCheckoutIdsArr1);
+        testNeedCheckoutArr[1] = new NeedCheckout("Emmet", testCheckoutIdsArr2);
+        testNeedCheckoutArr[2] = new NeedCheckout("Elesa", testCheckoutIdsArr3);
         
         testNeedCheckoutMap.put("Ingo", testNeedCheckoutArr[0]);
         testNeedCheckoutMap.put("Emmet", testNeedCheckoutArr[1]);
@@ -89,7 +97,10 @@ public class NeedCheckoutFileDAOTest {
 
     @Test
     public void testCreateNeedCheckout() throws IOException {
-        int[] checkoutIds = {99, 100, 101};
+        Map<Integer, Integer> checkoutIds = new HashMap<>();
+        checkoutIds.put(99, 5);
+        checkoutIds.put(100, 15);
+        checkoutIds.put(101, 8);
         NeedCheckout checkout = new NeedCheckout("N", checkoutIds);
 
         NeedCheckout result 
@@ -104,7 +115,10 @@ public class NeedCheckoutFileDAOTest {
 
     @Test
     public void testUpdateNeedCheckout() throws IOException {
-        int[] checkoutIds = {99, 100, 101};
+        Map<Integer, Integer> checkoutIds = new HashMap<>();
+        checkoutIds.put(99, 5);
+        checkoutIds.put(100, 15);
+        checkoutIds.put(101, 8);
         NeedCheckout checkout = new NeedCheckout("Ingo", checkoutIds);
 
         NeedCheckout result = assertDoesNotThrow(() -> needCheckoutFileDAO.updateNeedCheckout(checkout), "Unexpected exception thrown");
@@ -120,7 +134,8 @@ public class NeedCheckoutFileDAOTest {
             .when(mockObjectMapper)
                 .writeValue(any(File.class), any(NeedCheckout[].class));
         
-        int[] checkoutIds = {20};
+        Map<Integer, Integer> checkoutIds = new HashMap<>();
+        checkoutIds.put(20, 1);
         NeedCheckout checkout = new NeedCheckout("Akari", checkoutIds);
 
         assertThrows(IOException.class,
@@ -130,7 +145,8 @@ public class NeedCheckoutFileDAOTest {
 
     @Test
     public void testUpdateNeedCheckoutNotFound() {
-        int[] checkoutIds = {20, 93, 94};
+        Map<Integer, Integer> checkoutIds = new HashMap<>();
+        checkoutIds.put(20, 1);
         NeedCheckout checkout = new NeedCheckout("Akari", checkoutIds);
 
         NeedCheckout result 
