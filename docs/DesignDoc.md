@@ -17,23 +17,27 @@ This web application allows users to contribute to a homeless charity. The appli
 by the administrator who can manage the current needs. The user can contribute to the needs they'd like to. 
 
 ### Purpose
->  _**[Sprint 2 & 4]** Provide a very brief statement about the project and the most
-> important user group and user goals._
+
+This project is an application which simulates a fundraiser. There is a collection of several 'needs' (organized by the administrator) that require funds to advance by users. There are two user groups, the helpers, which select the needs that they'd like to contribute to, and do so and the administrators, who manage the fundraiser, and the specfic needs in the agenda. 
 
 ### Glossary and Acronyms
-> _**[Sprint 2 & 4]** Provide a table of terms and acronyms._
 
 | Term | Definition |
 |------|------------|
 | SPA | Single Page |
-
+| Needs | Elements of the fundraiser |
+| Helper | Users who are looking to contribute to the fundraiser |
+| Admin | Manager of the fundraiser |
+| Data Persistance | System has data integrity, changes are saved | 
+| Minimal Authentication | Security of user login and privileges |  
 
 ## Requirements
 
 In a simplified authentication system for a Helper/U-fund Manager application, users log in with just a username, where logging in as "admin" identifies a user as the U-fund Manager. Helpers can view, search, add, or remove needs from their funding basket and checkout to fund chosen needs. U-fund Managers have the authority to add, remove, and edit needs in the system but cannot view Helpers' funding baskets. All data is persisted to files, ensuring that changes are reflected for the next user session. Users will also have the ability to submit suggestion messages to the U-fund Manager. 
 
 ### Definition of MVP
-> _**[Sprint 2 & 4]** Provide a simple description of the Minimum Viable Product._
+
+The MVP for the U-Fund project includes minimal authentication for user login, helper functionality enabling viewing, searching, and funding of needs, alongside needs management capabilities for U-Fund managers, all ensuring data persistence across sessions.
 
 ### MVP Features
 >  _**[Sprint 4]** Provide a list of top-level Epics and/or Stories of the MVP._
@@ -48,10 +52,7 @@ This section describes the application domain.
 
 ![Domain Model](Domain-Analysis-Team1A.png)
 
-> _**[Sprint 2 & 4]** Provide a high-level overview of the domain for this application. You
-> can discuss the more important domain entities and their relationship
-> to each other._
-
+In this domain model, the relationships between the User / Helper and the Needs and Funding Basket are clearly defined. Similarly, the relationships with the U-Fund administrator are defined as well. It is clear that the administrator is the one in charge of of managing the cupboard, which contains the needs that the User / Helper can add to their funding basket, wishlist, or checkout. 
 
 ## Architecture and Design
 
@@ -112,12 +113,10 @@ NeedController.java -- This class handles the REST API requests for the Need res
 ### Model Tier
 Need.java -- Represents a Need entity 
 
-> _**[Sprint 2, 3 & 4]** Provide a summary of this tier of your architecture. This
-> section will follow the same instructions that are given for the View
-> Tier above._
+AuthCredentials.java -- Represents Authorization Credentials 
 
-> _At appropriate places as part of this narrative provide **one** or more updated and **properly labeled**
-> static models (UML class diagrams) with some details such as critical attributes and methods._
+The need class uses the information given by the AuthCredentials to ensure that 'need operations',
+(add/remove/etc.) can only be performed by the intended user. This management is critical to ensure that the application has the minimal authentication features outlined in the Minimal Viable Product Vision. 
 
 ![Model](model.png)
 
@@ -127,7 +126,14 @@ Controller (GRASP): A design pattern that assigns the responsibility of dealing 
 
 Single Responsibility Principle (SOLID): A principle that states a class should have only one reason to change, meaning it should have only one job or responsibility. This promotes a cleaner, more modular design by separating concerns within a software system.
 
-> _**[Sprint 2, 3 & 4]** Will eventually address upto **4 key OO Principles** in your final design. Follow guidance in augmenting those completed in previous Sprints as indicated to you by instructor. Be sure to include any diagrams (or clearly refer to ones elsewhere in your Tier sections above) to support your claims._
+Information Expert (SOLID): In the U-Fund project, the Information Expert principle is applied by assigning tasks to classes that hold the relevant data. For instance, the NeedsCupboard manages needs, and a UserManager handles user authentication. To further enhance adherence to this principle we can centralize all data-related operations within the owning class. For example, a SearchService in the NeedsCupboard should manage search operations. Use a FundingBasket class to manage all actions on the funding basket, ensuring changes are made through its methods for better data encapsulation and responsibility localization.
+
+Law of Demeter (SOLID): the Law of Demeter is applied to limit direct interactions between system
+components. For example, a Helper should use methods on the NeedsCupboard to interact with needs
+instead of directly accessing them. To further enhance adherence to this principle we can encourage using
+class methods for operations, like a Helper using FundingBasket methods to add needs, keeping the
+system's parts decoupled. Implement facade or service layers, such as a NeedManagementService, to
+mediate interactions between the UI and data models, reducing direct component coupling
 
 > _**[Sprint 3 & 4]** OO Design Principles should span across **all tiers.**_
 
@@ -140,15 +146,9 @@ Single Responsibility Principle (SOLID): A principle that states a class should 
 > _**[Sprint 4]** Discuss **future** refactoring and other design improvements your team would explore if the team had additional time._
 
 ## Testing
-> _This section will provide information about the testing performed
-> and the results of the testing._
 
 ### Acceptance Testing
-> _**[Sprint 2 & 4]** Report on the number of user stories that have passed all their
-> acceptance criteria tests, the number that have some acceptance
-> criteria tests failing, and the number of user stories that
-> have not had any testing yet. Highlight the issues found during
-> acceptance testing and if there are any concerns._
+All of our user stories have passed acceptance criteria. 
 
 ### Unit Testing and Code Coverage
 > _**[Sprint 4]** Discuss your unit testing strategy. Report on the code coverage
@@ -156,8 +156,19 @@ Single Responsibility Principle (SOLID): A principle that states a class should 
 > coverage targets, why you selected those values, and how well your
 > code coverage met your targets._
 
->_**[Sprint 2 & 4]** **Include images of your code coverage report.** If there are any anomalies, discuss
-> those._
+These are some of our code coverage test results. As shown, our code is generally well-tested. These test results gave us insights into how to improve our test coverage. 
+
+![Model Code Coverage](modelcc.png)
+
+![Persistance Code Coverage](persistancecc.png)
+Both the AuthFileDAO and the NeedFileDAO have missed instructions and missed branches. In the AuthFileDAO, the getAuthCredentials method has two branches that have not been tested: if the authCredentials contains the given username key and if it does not. We must add two tests: one that covers if the authCredentials contains the key and one that covers the case where it does not.
+
+
+![NeedFileDAO Code Coverage](needfileddaocc.png)
+
+The NeedFileDAO’s code coverage needs to be improved by implementing a test for the successful updating of a Need. So far, it only covers handling the exception in which the user tries to update a Need that is not found. There must be a test covering the successful updating of a Need.
 
 ## Ongoing Rationale
-(2024/02/21): Sprint #1 -- Created the necessary utilities needed to perform cURL operations on the Need entity. Includes functionalities such as creating / deleting need, retrieving specific need, searching need by partial name, updating needs, and listing all needs. 
+(2024/02/21): Sprint #1 -- Created the necessary utilities needed to perform cURL operations on the Need entity. Includes functionalities such as creating / deleting need, retrieving specific need, searching need by partial name, updating needs, and listing all needs.
+
+(2024/03/22): Sprint #2 -- Implemented all functionalities for minimal authentication so users are limited to performing actions according to their privileges. Introduced testing, and code coverage testing to ensure that our code is robust and functional. Also implemented functionalities related to the 'Checkout' of our application, such that users can fund a specific need, and ensure consistency with the cupboard.  
