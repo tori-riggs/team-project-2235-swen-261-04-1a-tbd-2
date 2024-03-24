@@ -40,7 +40,7 @@ public class AuthServiceTest {
     @CsvSource({
             "ADMIN, ADMIN, true",
             "USER, ADMIN, false",
-            "ADMIN, USER, falue",
+            "ADMIN, USER, false",
             "USER, USER, true"
     })
     public void whenCallHasPermissionLevel_WithAuthLevel_ThenReturnGiven(AuthLevel given, AuthLevel expected, boolean shouldPass) {
