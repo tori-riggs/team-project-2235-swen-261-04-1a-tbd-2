@@ -1,1 +1,4 @@
 .vscode/settings.json
+.idea/
+docs/design-doc.iml
+ufund-ui/package-lock.json
