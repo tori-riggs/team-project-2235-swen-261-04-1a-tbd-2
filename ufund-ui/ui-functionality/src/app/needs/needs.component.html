@@ -14,8 +14,8 @@
 </div>
 
 
-<ul class="needs">
-    <div *ngFor="let need of needs">
+<ul class="needs" *ngIf="!emptyCuboard; else emptyTemplate">
+    <div *ngFor="let need of needs" >
         <div *ngIf="permissionLevel === 'USER';">
             <a>
                 {{need.name}}
@@ -63,3 +63,7 @@
         </div>
     </div>
 </ul>
+
+<ng-template #emptyTemplate>
+    <h1>The cupboard has no needs at this time.</h1>
+</ng-template>

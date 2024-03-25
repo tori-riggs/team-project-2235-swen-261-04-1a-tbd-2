@@ -27,6 +27,7 @@ export class NeedsComponent implements OnInit {
   editing: boolean = false;
   creating: boolean = false;
   term?: string = "";
+  emptyCuboard: boolean = false;
   
   constructor(private needCheckoutService: NeedsCheckoutService, private needService: NeedService, 
     private messageService: MessageService) { }
@@ -56,12 +57,18 @@ export class NeedsComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    localStorage.setItem("search","")
-    this.getNeeds();
+    if(this.needs.length === 0){
+      this.emptyCuboard = true;
+    }
+    else{
+      this.emptyCuboard = false;
+      localStorage.setItem("search","")
+      this.getNeeds();
 
-    this.needService.newSearchEvent.subscribe(() => {
-      this.getNeeds()
-    })
+      this.needService.newSearchEvent.subscribe(() => {
+        this.getNeeds()
+      })
+    }
   }
   
   update(need: Need): void {
@@ -89,6 +96,7 @@ export class NeedsComponent implements OnInit {
     this.needService.createNeedInCupboard({ name, cost, quantity, description } as Need, this.username, this.password)
       .subscribe(need => {
         this.needs.push(need);
+        this.emptyCuboard = false;
       });
   }
 
@@ -103,6 +111,7 @@ export class NeedsComponent implements OnInit {
 
   delete(need: Need): void {
     this.needs = this.needs.filter(n => n !== need);
-    this.needService.deleteNeedFromCupboard(need.id, this.username, this.password).subscribe();
+    this.needService.deleteNeedFromCupboard(need.id, this.username, this.password).subscribe(
+      ()=>{this.needService.emitNewSearchEvent();})
   }
 }
