@@ -4,3 +4,7 @@ node_modules
 .idea/
 docs/design-doc.iml
 ufund-ui/package-lock.json
+.angular/cache/17.1.3/angular-tour-of-heroes/.tsbuildinfo
+.angular/cache/17.1.3/vite/deps/_metadata.json
+.angular/cache/17.1.3/angular-tour-of-heroes/.tsbuildinfo
+.vscode/launch.json
