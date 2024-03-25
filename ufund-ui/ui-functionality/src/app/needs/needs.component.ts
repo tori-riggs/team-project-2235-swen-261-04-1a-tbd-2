@@ -96,6 +96,7 @@ export class NeedsComponent implements OnInit {
     this.needService.createNeedInCupboard({ name, cost, quantity, description } as Need, this.username, this.password)
       .subscribe(need => {
         this.needs.push(need);
+        this.emptyCuboard = false;
       });
   }
 
@@ -110,6 +111,7 @@ export class NeedsComponent implements OnInit {
 
   delete(need: Need): void {
     this.needs = this.needs.filter(n => n !== need);
-    this.needService.deleteNeedFromCupboard(need.id, this.username, this.password).subscribe();
+    this.needService.deleteNeedFromCupboard(need.id, this.username, this.password).subscribe(
+      ()=>{this.needService.emitNewSearchEvent();})
   }
 }
