@@ -11,11 +11,16 @@ import { catchError, map, tap } from 'rxjs/operators';
     providedIn: 'root'
 })
 export class NeedService {
+    newSearchEvent: EventEmitter<void> = new EventEmitter<void>();
     private needsUrl = 'http://localhost:8080/needs/cupboard'// URL to web API
 
     httpOptions = {
         headers: new HttpHeaders({ 'Content-Type': 'application/json' })
     };
+
+    emitNewSearchEvent(): void {
+        this.newSearchEvent.emit();
+    }
 
     constructor(
         private http: HttpClient,

@@ -26,7 +26,7 @@ export class NeedsComponent implements OnInit {
   permissionLevel: string = localStorage.getItem("perms") ?? "";
   editing: boolean = false;
   creating: boolean = false;
-  term?: string = localStorage.getItem("search") ?? "";
+  term?: string = "";
   
   constructor(private needCheckoutService: NeedsCheckoutService, private needService: NeedService, 
     private messageService: MessageService) { }
@@ -38,16 +38,30 @@ export class NeedsComponent implements OnInit {
   }
 
   getNeeds(): void { 
+    this.term = localStorage.getItem("search") ?? "";
+    if(this.term != null && this.term != ""){
+      console.log(`${this.term}`)
+      this.needService.findMatchingNeedsFromCupboard(this.term)
+      .subscribe(needs => {
+        this.needs = needs
+      });
+    }
+    else{
       this.needService.getNeedsFromCupboard()
       .subscribe(needs => {
         this.needs = needs
       });
-      this.messageService.add(`permlevel=${this.permissionLevel}`);
+    }
+    this.messageService.add(`permlevel=${this.permissionLevel}`);
   }
 
   ngOnInit(): void {
     localStorage.setItem("search","")
     this.getNeeds();
+
+    this.needService.newSearchEvent.subscribe(() => {
+      this.getNeeds()
+    })
   }
   
   update(need: Need): void {
@@ -78,8 +92,9 @@ export class NeedsComponent implements OnInit {
       });
   }
 
-  addToCart(id: number){
-    this.needCheckoutService.addNeedToFundingBasket(this.username, id, this.password).subscribe(
+  addToCart(need: Need){
+    console.log(`${need.id}`)
+    this.needCheckoutService.addNeedToFundingBasket(this.username, this.password, need.id, 1).subscribe(
       checkout => {
         this.needCheckout = checkout; // Update needCheckout after adding
         this.needCheckoutService.emitAddToCartEvent();

@@ -25,8 +25,9 @@ export class FundingBasketComponent implements OnInit {
   password: string = localStorage.getItem("password") ?? "";
   permissionLevel: string = localStorage.getItem("perms") ?? "";
   needCheckout?: NeedCheckout;
-  checkoutIDs?: number[];
   checkingOut: boolean = false;
+  checkoutIDs: { [key: number]: number } = {};
+  totalPrice: number = 0;
   
   constructor(private needCheckoutService: NeedsCheckoutService, private needService: NeedService, 
     private messageService: MessageService) { }
@@ -38,24 +39,22 @@ export class FundingBasketComponent implements OnInit {
   }
 
   getNeeds(): void {
-    if (!this.needCheckout || !this.checkoutIDs) {
-      return;
-    }
+    if(!this.checkoutIDs){return;}
     this.needs = []
-    console.log(`${this.checkoutIDs.length}`)
-    for (const id of this.checkoutIDs) {
-      this.needService.getNeedFromCupboard(id).subscribe((need: Need) => {
-        const newNeed = {
-          id: need.id,
-          name: need.name,
-          cost: need.cost,
-          quantity: need.quantity,
-          description: need.description
-        };
-        
-        this.needs.push(newNeed);
-      });
+    this.totalPrice = 0;
+    for(let idStr in this.checkoutIDs){
+      let id = parseInt(idStr);
+      if (!isNaN(id)) {
+        this.needService.getNeedFromCupboard(id)
+          .subscribe(need => {
+            need.quantity = this.checkoutIDs[id]
+            this.totalPrice += (need.quantity*need.cost)
+            this.needs.push(need);
+          });
+      }
+
     }
+
   }
 
   getFundingBasket(): void {
@@ -80,22 +79,16 @@ export class FundingBasketComponent implements OnInit {
 
   checkout(): void {
     this.checkingOut = true;
-    this.getNeeds()
     this.checking = this.needs
-    if(!this.checkoutIDs){return;}
-    this.getFundingBasket()
-    this.checkoutIDs.forEach(id => {
-      this.needService.getNeedFromCupboard(id).subscribe((need: Need) => {
-        const newNeed = {
-          id: need.id,
-          name: need.name,
-          cost: need.cost,
-          quantity: --need.quantity,
-          description: need.description
-        };
-        this.remove(newNeed)
-      });
-    });
+    this.needCheckoutService.checkout(this.username, this.password).subscribe(
+      needCheckout =>{
+        this.needCheckout = needCheckout; // Update needCheckout after removing
+        this.checkoutIDs = needCheckout?.checkoutIds; 
+        this.needService.emitNewSearchEvent();
+        this.getFundingBasket();
+      }
+    )
+
     this.checkingOut = false;
   }
 

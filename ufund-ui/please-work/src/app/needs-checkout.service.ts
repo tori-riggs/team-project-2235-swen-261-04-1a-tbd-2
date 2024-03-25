@@ -25,15 +25,20 @@ export class NeedsCheckoutService {
     .pipe(catchError(this.handleError<NeedCheckout>('getFundingBasket')));
   }
 
-  addNeedToFundingBasket(username: string, id: number, password: string): Observable<NeedCheckout> {
-    return this.http.put<NeedCheckout>(`${this.needsCheckoutUrl}?username=${username}&password=${password}`, id)
+  addNeedToFundingBasket(username: string, password: string, id: number, quantity: number): Observable<NeedCheckout> {
+    return this.http.post<NeedCheckout>(`${this.needsCheckoutUrl}?id=${id}&quantity=${quantity}&username=${username}&password=${password}`,quantity)
     .pipe(catchError(this.handleError<NeedCheckout>('addNeedToFundingBasket')));
   }
 
   removeNeedFromFundingBasket(username: string, id: number, password: string): Observable<NeedCheckout> {
-    console.log(`${id}`)
     return this.http.delete<NeedCheckout>(`${this.needsCheckoutUrl}?id=${id}&username=${username}&password=${password}`)
     .pipe(catchError(this.handleError<NeedCheckout>('removeNeedToFundingBasket')));
+  }
+
+  checkout(username: string, password: string): Observable<NeedCheckout> {
+    const url = `${this.needsCheckoutUrl}/checkout?username=${username}&password=${password}`;
+    return this.http.put<NeedCheckout>(url,{username, password})
+    .pipe(catchError(this.handleError<NeedCheckout>('checkout')));
   }
 
   emitAddToCartEvent(): void {
@@ -55,6 +60,7 @@ private log(message: string) {
 */
 private handleError<T>(operation = 'operation', result?: T) {
     return (error: any): Observable<T> => {
+      this.messageService.add(error)
         console.error(error);
         this.log(`${operation} failed: ${error.message}`);
         return of(result as T);

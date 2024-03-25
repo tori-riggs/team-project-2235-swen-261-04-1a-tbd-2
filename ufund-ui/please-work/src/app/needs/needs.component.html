@@ -23,8 +23,7 @@
                 <div>quantity: {{need.quantity}}</div>
                 <div>description: {{need.description}}</div>
             </a>       
-            <button type="button" class="add" title="add need to cart"(click)="getNeeds()">getneeds test</button>
-            <button type="button" class="add" title="add need to cart"(click)="addToCart(need.id)">add to cart</button>
+            <button type="button" class="add" title="add need to cart"(click)="addToCart(need)">add to cart</button>
         </div>
 
         <div *ngIf="permissionLevel === 'ADMIN';">

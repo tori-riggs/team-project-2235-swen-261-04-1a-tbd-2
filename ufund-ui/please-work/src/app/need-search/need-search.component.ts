@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
 import {
-  debounceTime, distinctUntilChanged, switchMap
+  debounceTime, distinctUntilChanged, filter, switchMap
 } from 'rxjs/operators';
 
 import { Need } from '../need';
@@ -21,15 +21,16 @@ export class NeedSearchComponent {
   search(term: string): void {
     localStorage.setItem("search",term);
     this.searchTerms.next(term);
+    this.needService.emitNewSearchEvent();
   }
 
   ngOnInit(): void {
     this.needs$ = this.searchTerms.pipe(
       debounceTime(300),
       distinctUntilChanged(),
-
+      filter((term: string) => !!term), // get rid of annoying backspace "" terms, where everything is a var
       switchMap((term: string) => 
-      this.needService.findMatchingNeedsFromCupboard(term)),
+        this.needService.findMatchingNeedsFromCupboard(term)),
     );
   }
 }
