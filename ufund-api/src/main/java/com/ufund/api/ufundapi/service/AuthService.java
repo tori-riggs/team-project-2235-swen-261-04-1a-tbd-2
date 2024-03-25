@@ -26,13 +26,8 @@ public class AuthService {
             //no login, no perms
             return false;
         }
-        if (AuthLevel.USER ==  requiredAuthLevel) {
-            //all logins have user perms
-            return true;
-        }
-        //requiredAuthLevel must be admin
         AuthLevel authLevel = getPermissionLevel(username);
-        return AuthLevel.ADMIN == authLevel;
+        return requiredAuthLevel == authLevel;
     }
 
     public AuthLevel getPermissionLevel(String username) {
