@@ -45,30 +45,26 @@ export class NeedsComponent implements OnInit {
       this.needService.findMatchingNeedsFromCupboard(this.term)
       .subscribe(needs => {
         this.needs = needs
+        this.emptyCuboard = this.needs.length == 0;
       });
     }
     else{
       this.needService.getNeedsFromCupboard()
       .subscribe(needs => {
         this.needs = needs
+        this.emptyCuboard = this.needs.length == 0;
       });
     }
     this.messageService.add(`permlevel=${this.permissionLevel}`);
   }
 
   ngOnInit(): void {
-    if(this.needs.length === 0){
-      this.emptyCuboard = true;
-    }
-    else{
-      this.emptyCuboard = false;
       localStorage.setItem("search","")
       this.getNeeds();
 
       this.needService.newSearchEvent.subscribe(() => {
         this.getNeeds()
       })
-    }
   }
   
   update(need: Need): void {
