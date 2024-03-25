@@ -1,0 +1,12 @@
+/* HeroesComponent's private CSS styles */
+.needs {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr); /* 5 needs across */
+  grid-gap: 20px; /* Adjust the gap based on your needs */
+}
+
+.need-container {
+  border: 1px solid #ccc;
+  padding: 10px;
+  box-sizing: border-box;
+}
