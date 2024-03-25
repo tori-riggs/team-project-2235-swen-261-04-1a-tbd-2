@@ -27,6 +27,7 @@ export class NeedsComponent implements OnInit {
   editing: boolean = false;
   creating: boolean = false;
   term?: string = "";
+  emptyCuboard: boolean = false;
   
   constructor(private needCheckoutService: NeedsCheckoutService, private needService: NeedService, 
     private messageService: MessageService) { }
@@ -56,12 +57,18 @@ export class NeedsComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    localStorage.setItem("search","")
-    this.getNeeds();
+    if(this.needs.length === 0){
+      this.emptyCuboard = true;
+    }
+    else{
+      this.emptyCuboard = false;
+      localStorage.setItem("search","")
+      this.getNeeds();
 
-    this.needService.newSearchEvent.subscribe(() => {
-      this.getNeeds()
-    })
+      this.needService.newSearchEvent.subscribe(() => {
+        this.getNeeds()
+      })
+    }
   }
   
   update(need: Need): void {
