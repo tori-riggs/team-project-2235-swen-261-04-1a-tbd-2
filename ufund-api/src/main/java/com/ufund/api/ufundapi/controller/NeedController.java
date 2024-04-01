@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ufund.api.ufundapi.model.Need;
-import com.ufund.api.ufundapi.persistence.NeedDAO;
 
 import java.io.IOException;
 import java.util.logging.Level;
@@ -28,7 +27,7 @@ import java.util.logging.Logger;
  * <p>
  * {@literal @}RestController Spring annotation identifies this class as a REST API
  * method handler to the Spring framework
- * 
+ *
  * @author SWEN Faculty
  */
 
@@ -47,13 +46,13 @@ public class NeedController {
 
     /**
      * Responds to the GET request for a {@linkplain Need need} for the given id
-     * 
+     *
      * @param id The id used to locate the {@link Need need}
-     * 
+     *
      * @return ResponseEntity with {@link Need need} object and HTTP status of OK if found<br>
      * ResponseEntity with HTTP status of NOT_FOUND if not found<br>
      * ResponseEntity with HTTP status of INTERNAL_SERVER_ERROR otherwise
-     * @throws IOException 
+     * @throws IOException
      */
     @GetMapping("cupboard/{id}")
     public ResponseEntity<Need> get(@PathVariable int id) throws IOException {
@@ -73,7 +72,7 @@ public class NeedController {
 
     /**
      * Responds to the GET request for all {@linkplain Need needs}
-     * 
+     *
      * @return ResponseEntity with array of {@link Need need} objects (may be empty) and
      * HTTP status of OK<br>
      * ResponseEntity with HTTP status of INTERNAL_SERVER_ERROR otherwise
@@ -93,9 +92,9 @@ public class NeedController {
     /**
      * Responds to the GET request for all {@linkplain Need needs} whose name contains
      * the text in name
-     * 
+     *
      * @param name The name parameter which contains the text used to find the {@link Need needs}
-     * 
+     *
      * @return ResponseEntity with array of {@link Need need} objects (may be empty) and
      * HTTP status of OK<br>
      * ResponseEntity with HTTP status of INTERNAL_SERVER_ERROR otherwise
@@ -117,9 +116,9 @@ public class NeedController {
 
     /**
      * Creates a {@linkplain Need need} with the provided need object
-     * 
+     *
      * @param need - The {@link Need need} to create
-     * 
+     *
      * @return ResponseEntity with created {@link Need need} object and HTTP status of CREATED<br>
      * ResponseEntity with HTTP status of CONFLICT if {@link Need need} object already exists<br>
      * ResponseEntity with HTTP status of INTERNAL_SERVER_ERROR otherwise
@@ -144,9 +143,9 @@ public class NeedController {
 
     /**
      * Updates the {@linkplain Need need} with the provided {@linkplain Need need} object, if it exists
-     * 
+     *
      * @param need The {@link Need need} to update
-     * 
+     *
      * @return ResponseEntity with updated {@link Need need} object and HTTP status of OK if updated<br>
      * ResponseEntity with HTTP status of NOT_FOUND if not found<br>
      * ResponseEntity with HTTP status of INTERNAL_SERVER_ERROR otherwise
@@ -171,9 +170,9 @@ public class NeedController {
 
     /**
      * Deletes a {@linkplain Need need} with the given id
-     * 
+     *
      * @param id The id of the {@link Need need} to deleted
-     * 
+     *
      * @return ResponseEntity HTTP status of OK if deleted<br>
      * ResponseEntity with HTTP status of NOT_FOUND if not found<br>
      * ResponseEntity with HTTP status of INTERNAL_SERVER_ERROR otherwise
