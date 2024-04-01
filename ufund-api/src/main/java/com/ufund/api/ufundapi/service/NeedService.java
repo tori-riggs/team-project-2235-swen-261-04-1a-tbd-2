@@ -1,5 +1,6 @@
 package com.ufund.api.ufundapi.service;
 
+import com.ufund.api.ufundapi.enums.SortingOption;
 import com.ufund.api.ufundapi.model.Need;
 import com.ufund.api.ufundapi.model.NeedCheckout;
 import com.ufund.api.ufundapi.persistence.NeedCheckoutDAO;
@@ -7,9 +8,8 @@ import com.ufund.api.ufundapi.persistence.NeedDAO;
 import org.springframework.context.annotation.Configuration;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Stream;
 
 @Configuration
 public class NeedService {
@@ -26,6 +26,46 @@ public class NeedService {
 
     public Need[] getNeedsFromCupboard() throws IOException {
         return needDAO.getNeeds();
+    }
+
+    public Need[] getNeedsFromCupboard(SortingOption sortingOption) throws IOException {
+        Need[] needs = needDAO.getNeeds();
+        switch (sortingOption) {
+            case ALPHABETICAL:
+                return sortAlphabetical(needs);
+            case ALPHABETICAL_REVERSE:
+                return sortAlphabeticalReverse(needs);
+            case NUMERICAL:
+                return sortNumerical(needs);
+            case NUMERICAL_REVERSE:
+                return sortNumericalReverse(needs);
+        }
+        return needs;
+    }
+
+    private Need[] sortAlphabetical(Need[] needs) {
+        return streamToArray(Arrays.stream(needs).sorted((a, b) -> a.getName().compareTo(b.getName())));
+    }
+
+    private Need[] sortAlphabeticalReverse(Need[] needs) {
+        return streamToArray(Arrays.stream(needs).sorted((a, b) -> b.getName().compareTo(a.getName())));
+    }
+
+    private Need[] sortNumerical(Need[] needs) {
+        return streamToArray(Arrays.stream(needs).sorted((a, b) -> Math.min(1, Math.max(-1, a.getId()-b.getId()))));
+    }
+
+    private Need[] sortNumericalReverse(Need[] needs) {
+        return streamToArray(Arrays.stream(needs).sorted((a, b) -> Math.min(1, Math.max(-1, b.getId()-a.getId()))));
+    }
+
+    private Need[] streamToArray(Stream<Need> stream) {
+        Need[] array = new Need[(int)stream.count()];
+        List<Need> needList = stream.toList();
+        for(int i = 0; i<needList.size(); i++) {
+            array[i] = needList.get(i);
+        }
+        return array;
     }
 
     public Need[] findMatchingNeedsFromCupboard(String name) throws IOException {

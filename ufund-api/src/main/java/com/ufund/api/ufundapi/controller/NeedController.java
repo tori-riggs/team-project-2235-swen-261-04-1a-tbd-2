@@ -1,6 +1,7 @@
 package com.ufund.api.ufundapi.controller;
 
 import com.ufund.api.ufundapi.enums.AuthLevel;
+import com.ufund.api.ufundapi.enums.SortingOption;
 import com.ufund.api.ufundapi.model.NeedCheckout;
 import com.ufund.api.ufundapi.service.AuthService;
 import com.ufund.api.ufundapi.service.NeedService;
@@ -83,6 +84,18 @@ public class NeedController {
 
         try {
             Need[] needs = needService.getNeedsFromCupboard();
+            return new ResponseEntity<>(needs, HttpStatus.OK);
+        } catch (IOException e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping("cupboard")
+    public ResponseEntity<Need[]> getNeeds(@RequestParam SortingOption sortingOption) {
+        LOG.info("GET /needs/cupboard with sorting option");
+
+        try {
+            Need[] needs = needService.getNeedsFromCupboard(sortingOption);
             return new ResponseEntity<>(needs, HttpStatus.OK);
         } catch (IOException e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
