@@ -22,26 +22,7 @@ export class LoginService {
     authenticate(username: string, password: string): Observable<any> {
         return this.http.get<AuthCredentials>(`${this.authUrl}?username=${username}&password=${password}`);
     }
-    /** 
-    credentialsExist(username: string, password: string): Observable<boolean> {
-        const url = `${this.authUrl}?username=${username}&password=${password}`;
-        return this.http.post<boolean>(url, { username, password }).pipe(
-          catchError(this.handleError<boolean>('credentialsExist'))
-        );
-    }
     
-      // Function to check if user has required permission level
-      hasPermissionLevel(username: string, password: string, requiredAuthLevel: string): Observable<boolean> {
-        return this.credentialsExist(username, password).pipe(
-          map((credentialsExist: boolean) => {
-            if (!credentialsExist) {
-              return false;
-            }
-            return this.getPermissionLevel(username) === requiredAuthLevel;
-          })
-        );
-      }
-      */
     
       // Function to get permission level of a user
       getPermissionLevel(username: string, password: string): Observable<string> {

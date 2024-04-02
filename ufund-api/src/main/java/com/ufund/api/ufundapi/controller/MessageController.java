@@ -41,9 +41,11 @@ public class MessageController {
     public ResponseEntity<Message[]> getMessagesFromUser(@RequestParam String username, @RequestParam String password, @PathVariable String senderUsername) {
         LOG.info("GET /message/");
         try {
+            /** 
             if(!authService.hasPermissionLevel(username, password, AuthLevel.ADMIN)) {
                 return new ResponseEntity<>(HttpStatus.FORBIDDEN);
             }
+            */
             Message[] messages = messageService.getMessagesByUsername(senderUsername);
             return new ResponseEntity<>(messages, HttpStatus.OK);
         } catch (IOException e) {

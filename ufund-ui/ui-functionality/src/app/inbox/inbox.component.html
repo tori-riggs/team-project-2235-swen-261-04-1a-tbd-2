@@ -1,0 +1,21 @@
+<div class = "messaging">
+    <form  #MessageForm>
+        <label for="messaging-body">Message:</label><br>
+        <input #messageBody><br>
+        <span>
+            <button type="submit" (click)="createMessage(messageBody.value);messageBody.value=''">Send Message</button>
+        </span>       
+    </form>
+</div>
+
+<!--*ngFor="let message of messages"-->
+<div class="inbox" >
+    <h1>Inbox of {{username}}</h1>
+    <div class = "messages-box" *ngFor="let message of messages">
+        <span>
+            <h5>date: {{message.time}} || {{message.text}}</h5> 
+            <button>x</button>
+        </span>
+    </div>
+   
+</div>
