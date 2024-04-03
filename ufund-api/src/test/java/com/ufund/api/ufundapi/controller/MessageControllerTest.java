@@ -11,7 +11,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import java.io.IOException;
-import java.util.Date;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
@@ -101,7 +100,7 @@ public class MessageControllerTest {
         String username = "username";
         String password = "password";
         String text = "message";
-        Message message = new Message(0, username, new Date(0,0,0), text);
+        Message message = new Message(0, username, "0/0/0", text);
 
 
         when(authService.hasPermissionLevel(eq(username), eq(password), eq(AuthLevel.USER))).thenReturn(true);
@@ -120,7 +119,7 @@ public class MessageControllerTest {
         String username = "username";
         String password = "password";
         String text = "message";
-        Message message = new Message(0, username, new Date(0,0,0), text);
+        Message message = new Message(0, username, "0/0/0", text);
 
         when(authService.hasPermissionLevel(eq(username), eq(password), eq(AuthLevel.USER))).thenReturn(false);
 
