@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { EventEmitter, Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { MessageService } from './message.service';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
@@ -8,7 +8,7 @@ import { Message } from './message';
   providedIn: 'root'
 })
 export class InboxService {
-
+  newMessageEvent: EventEmitter<void> = new EventEmitter<void>();
   private messageUrl = 'http://localhost:8080/message'; // URL to web API
 
     httpOptions = {
@@ -18,6 +18,10 @@ export class InboxService {
     constructor(
         private http: HttpClient,
         private messageService: MessageService) { }
+
+      emitnewMessageEvent(): void {
+          this.newMessageEvent.emit();
+      }
 
     getMessages(username: string, password: string): Observable<Message[]> {
       const url = `${this.messageUrl}?username=${username}&password=${password}`;

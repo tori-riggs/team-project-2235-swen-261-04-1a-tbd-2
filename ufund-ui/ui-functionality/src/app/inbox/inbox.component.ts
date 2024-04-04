@@ -28,9 +28,10 @@ export class InboxComponent {
   }
 
   ngOnInit(): void {
-    console.log("test")
     this.getMessages()
-    console.log("test")
+
+    this.inboxService.newMessageEvent.subscribe(() => {
+      this.getMessages()})
   }
 
   getMessages(){
@@ -48,13 +49,10 @@ export class InboxComponent {
       timestamp: days[date.getDay()]+' '+date.getHours().toString()+':'+date.getMinutes().toString(), // Use currentTimeMillis
       text: userText,
     } as Message;
-    
-    console.log(`${userMessage.timestamp}`)
-    console.log(`${userMessage}`)
     this.inboxService.createMessage(this.username,this.password,userMessage).subscribe(
       message => {
         this.check = message
-        console.log(message.timestamp)
+        this.inboxService.emitnewMessageEvent()
       })
   }
 
