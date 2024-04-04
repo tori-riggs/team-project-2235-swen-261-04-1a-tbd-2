@@ -66,7 +66,6 @@ public class MessageController {
             if(!authService.hasPermissionLevel(username, password, AuthLevel.USER)) {
                 return new ResponseEntity<>(HttpStatus.FORBIDDEN);
             }
-            System.out.println(message);
             Message newMessage = messageService.createMessage(message);
             return new ResponseEntity<>(newMessage, HttpStatus.OK);
         } catch (IOException e) {

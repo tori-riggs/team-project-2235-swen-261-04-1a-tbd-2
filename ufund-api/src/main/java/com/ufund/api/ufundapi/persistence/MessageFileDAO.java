@@ -134,11 +134,9 @@ public class MessageFileDAO implements MessageDAO {
      */
     @Override
     public Message createMessage(Message message) throws IOException {
-        System.out.println(message);
         synchronized(messages) {
             // We create a new need object because the id field is immutable
             // and we need to assign the next unique id
-            System.out.println(message.getTimestamp());
             Message newMessage = new Message(nextId(),message.getUsername(),message.getTimestamp(),message.getText());
             messages.put(newMessage.getId(),newMessage);
             save(); // may throw an IOException
@@ -153,7 +151,6 @@ public class MessageFileDAO implements MessageDAO {
     public boolean deleteMessage(int id) throws IOException {
         synchronized(messages) {
             if (messages.containsKey(id)) {
-                System.out.println("teststst");
                 messages.remove(id);
                 return save();
             }
