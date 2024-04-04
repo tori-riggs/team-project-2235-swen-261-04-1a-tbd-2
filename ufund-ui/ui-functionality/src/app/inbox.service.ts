@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
-import { AuthCredentials } from './login';
 import { MessageService } from './message.service';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { catchError, map, tap } from 'rxjs/operators';
@@ -10,7 +9,7 @@ import { Message } from './message';
 })
 export class InboxService {
 
-  private authUrl = 'http://localhost:8080/message'; // URL to web API
+  private messageUrl = 'http://localhost:8080/message'; // URL to web API
 
     httpOptions = {
         headers: new HttpHeaders({ 'Content-Type': 'application/json' })
@@ -20,29 +19,23 @@ export class InboxService {
         private http: HttpClient,
         private messageService: MessageService) { }
 
-    getAllMessages(username: string, password: string): Observable<Message[]> {
-      const url = `${this.authUrl}?username=${username}&password=${password}`;
+    getMessages(username: string, password: string): Observable<Message[]> {
+      const url = `${this.messageUrl}?username=${username}&password=${password}`;
       let something = this.http.get<Message[]>(url).pipe(
         catchError(this.handleError<Message[]>('getAllMessages')))
         return something;
     }
 
-    getMessageForUser(username: string, password: string): Observable<Message[]> {
-      const url = `${this.authUrl}/${username}?username=${username}&password=${password}`;
-      let something = this.http.get<Message[]>(url).pipe(
-        catchError(this.handleError<Message[]>('getMessageForUser')))
-        return something;
-    }
-
-    createMessage(username: string, password: string, text: string): Observable<Message> {
-      const url = `${this.authUrl}?username=${username}&password=${password}`;
-      let something = this.http.put<Message>(url,{text}).pipe(
+    createMessage(username: string, password: string, message: Message): Observable<Message> {
+      console.log(`${message.username}`)
+      const url = `${this.messageUrl}?username=${username}&password=${password}`;
+      let something = this.http.put<Message>(url,message).pipe(
         catchError(this.handleError<Message>('createMessage')))
         return something;
     }
 
     deleteMessage(username: string, password: string, id: number): Observable<Message> {
-      const url = `${this.authUrl}/${id}?username=${username}&password=${password}`;
+      const url = `${this.messageUrl}?username=${username}&password=${password}&id=${id}`;
       let something = this.http.delete<Message>(url).pipe(
         catchError(this.handleError<Message>('deleteMessage')))
         return something;

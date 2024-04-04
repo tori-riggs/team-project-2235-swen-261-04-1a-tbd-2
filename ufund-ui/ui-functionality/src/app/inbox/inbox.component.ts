@@ -17,7 +17,7 @@ export class InboxComponent {
   messages: Message[] = [];
   selectedMessage?: Message;
   
-  check: string = '';
+  check?: Message;
 
   constructor(private inboxService: InboxService, 
     private messageService: MessageService) 
@@ -34,22 +34,33 @@ export class InboxComponent {
   }
 
   getMessages(){
-    this.inboxService.getMessageForUser(this.username,this.password).subscribe(messages => this.messages = messages)
+    this.inboxService.getMessages(this.username,this.password).subscribe(messages => {
+      this.messages = messages
+    })
   }
 
-  createMessage(text: string){
-    this.inboxService.createMessage(this.username,this.password,text).subscribe(
+  createMessage(userText: string){
+    var date = new Date();
+    const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+    const userMessage = {
+      id: 0,
+      username: this.username,
+      timestamp: days[date.getDay()]+' '+date.getHours().toString()+':'+date.getMinutes().toString(), // Use currentTimeMillis
+      text: userText,
+    } as Message;
+    
+    console.log(`${userMessage.timestamp}`)
+    console.log(`${userMessage}`)
+    this.inboxService.createMessage(this.username,this.password,userMessage).subscribe(
       message => {
-        this.check = message.text
-        console.log(`${this.check}`)
+        this.check = message
+        console.log(message.timestamp)
       })
   }
 
-  deleteMessage(id: number){
-    this.inboxService.deleteMessage(this.username,this.password,id)
+  deleteMessage(message: Message){
+    this.messages = this.messages.filter(m=> m !== message);
+    this.inboxService.deleteMessage(this.username,this.password,message.id).subscribe()
   }
-
-
-
   
 }

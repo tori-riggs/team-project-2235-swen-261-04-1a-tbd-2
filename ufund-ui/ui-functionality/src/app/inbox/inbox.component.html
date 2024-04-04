@@ -1,4 +1,4 @@
-<div class = "messaging">
+<div class = "messaging" *ngIf="permissionLevel === 'USER';">
     <form  #MessageForm>
         <label for="messaging-body">Message:</label><br>
         <input #messageBody><br>
@@ -9,13 +9,12 @@
 </div>
 
 <!--*ngFor="let message of messages"-->
-<div class="inbox" >
+<div class="inbox" *ngIf="permissionLevel === 'USER' || permissionLevel === 'ADMIN';">
     <h1>Inbox of {{username}}</h1>
     <div class = "messages-box" *ngFor="let message of messages">
         <span>
-            <h5>date: {{message.time}} || {{message.text}}</h5> 
-            <button>x</button>
+            <h6>{{message.timestamp}} | {{message.username}}: {{message.text}}</h6> 
+            <button type="submit" (click)="deleteMessage(message)">x</button>
         </span>
     </div>
-   
 </div>

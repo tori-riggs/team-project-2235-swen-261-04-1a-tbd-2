@@ -27,11 +27,17 @@ public class MessageController {
     public ResponseEntity<Message[]> getAllMessages(@RequestParam String username, @RequestParam String password) {
         LOG.info("GET /message/");
         try {
-            if(!authService.hasPermissionLevel(username, password, AuthLevel.ADMIN)) {
+            if(authService.hasPermissionLevel(username, password, AuthLevel.ADMIN)) {
+                Message[] messages = messageService.getAllMessages();
+                return new ResponseEntity<>(messages, HttpStatus.OK);
+            }
+            else if(authService.hasPermissionLevel(username, password, AuthLevel.USER)){
+                Message[] messages = messageService.getAllMessages();
+                return new ResponseEntity<>(messages, HttpStatus.OK);
+            }
+            else{
                 return new ResponseEntity<>(HttpStatus.FORBIDDEN);
             }
-            Message[] messages = messageService.getAllMessages();
-            return new ResponseEntity<>(messages, HttpStatus.OK);
         } catch (IOException e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -60,6 +66,7 @@ public class MessageController {
             if(!authService.hasPermissionLevel(username, password, AuthLevel.USER)) {
                 return new ResponseEntity<>(HttpStatus.FORBIDDEN);
             }
+            System.out.println(message);
             Message newMessage = messageService.createMessage(message);
             return new ResponseEntity<>(newMessage, HttpStatus.OK);
         } catch (IOException e) {
@@ -67,9 +74,9 @@ public class MessageController {
         }
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Message> deleteMessage(@RequestParam String username, @RequestParam String password, @PathVariable int id) {
-        LOG.info("DELETE /message/{id}");
+    @DeleteMapping("")
+    public ResponseEntity<Message> deleteMessage(@RequestParam String username, @RequestParam String password, @RequestParam int id) {
+        LOG.info("DELETE /message/");
         try {
             if(!authService.hasPermissionLevel(username, password, AuthLevel.USER)) {
                 return new ResponseEntity<>(HttpStatus.FORBIDDEN);

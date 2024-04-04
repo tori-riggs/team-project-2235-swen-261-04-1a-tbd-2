@@ -18,10 +18,10 @@ public class Message {
 
     @JsonProperty("id") private int id;
     @JsonProperty("username") private String username;
-    @JsonProperty("timestamp") private Date timestamp;
+    @JsonProperty("timestamp") private String timestamp;
     @JsonProperty("text") private String text;
 
-    public Message(@JsonProperty("id") int id, @JsonProperty("username") String username, @JsonProperty("timestamp") Date timestamp, @JsonProperty("text") String text) {
+    public Message(@JsonProperty("id") int id, @JsonProperty("username") String username, @JsonProperty("timestamp") String timestamp, @JsonProperty("text") String text) {
         this.id = id;
         this.username = username;
         this.timestamp = timestamp;
@@ -36,7 +36,7 @@ public class Message {
         return username;
     }
 
-    public Date getTimestamp() {
+    public String getTimestamp() {
         return timestamp;
     }
 
