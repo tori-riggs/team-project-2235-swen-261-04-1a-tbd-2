@@ -1,10 +1,13 @@
 
     <div class = "cupboard">
-        <h3 class = "label">Cupboard</h3>
         <span class = "utilities">
-            <button class = "sort">
-                Sort By: dropdown in future
-            </button>
+            <span>
+                Sort By: 
+                <button (click)="sorting('ALPHABETICAL')">A-Z</button>
+                <button (click)="sorting('ALPHABETICAL_REVERSE')">Z-A</button>
+                <button (click)="sorting('NUMERICAL')">$-$$$</button>
+                <button (click)="sorting('NUMERICAL_REVERSE')">$$$-$</button>
+            </span>
             <span>
                 <app-need-search></app-need-search>
             </span>

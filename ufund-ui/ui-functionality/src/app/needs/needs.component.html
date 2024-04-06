@@ -15,7 +15,7 @@
 
 
 <ul class="needs" *ngIf="!emptyCuboard; else emptyTemplate">
-    <div *ngFor="let need of needs" >
+    <div *ngFor="let need of needs" class = "need-box">
         <div *ngIf="permissionLevel === 'USER';">
             <a>
                 {{need.name}}

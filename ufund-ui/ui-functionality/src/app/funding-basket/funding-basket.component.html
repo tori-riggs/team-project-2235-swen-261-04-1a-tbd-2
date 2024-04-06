@@ -1,17 +1,18 @@
 <div *ngIf="permissionLevel === 'USER';" class = "funding-basket">
-    <span class="badge">{{username}} Funding Basket:</span>
-    <div class = "needs-storage"> 
-        <button type="button" class="checkout" title="checkout" (click)="checkout(); ">Checkout</button>
-        <div>
-            <div *ngFor="let need of needs">
+    <br>
+    <span class="badge">{{username}} Funding Basket:</span><br><br>
+    <div >
+        <div class = "needs-storage">
+            <div *ngFor="let need of needs" style="padding-bottom:2%;">
                 <a>
                     <span>
-                        <div>{{need.name}}({{need.quantity}}): ${{need.cost}}</div>
+                        <div style="color:aliceblue; padding-bottom: 0.5%;">{{need.name}}({{need.quantity}}): ${{need.cost}}</div>
                     </span>
                 </a>       
                 <button type="button" class="add" title="add need to cart"(click)="remove(need)">Remove</button>
             </div>
-            <div>Total: ${{totalPrice}}</div>
+            <button type="button" class="checkout" title="checkout" (click)="checkout(); ">Checkout</button>
+            <div style="color:aliceblue;">Total: ${{totalPrice}}</div>
         </div>
     </div>
 </div>

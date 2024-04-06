@@ -3,7 +3,7 @@ import { Need } from './need';
 import { NEEDS } from './mock-needs';
 import { Observable, of } from 'rxjs';
 import { MessageService } from './message.service';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { catchError, map, tap } from 'rxjs/operators';
 
 
@@ -26,6 +26,9 @@ export class NeedService {
         private http: HttpClient,
         private messageService: MessageService) { }
 
+
+        
+
     // Function to get a single need from the cupboard
     getNeedFromCupboard(id: number): Observable<Need> {
         const url = `${this.needsUrl}/${id}`;
@@ -37,6 +40,13 @@ export class NeedService {
     // Function to get all needs from the cupboard
     getNeedsFromCupboard(): Observable<Need[]> {
         const url = `${this.needsUrl}`;
+        return this.http.get<Need[]>(url).pipe(
+            catchError(this.handleError<Need[]>('getNeedsFromCupboard'))
+        );
+    }
+
+    sortNeeds(sortingOption: String): Observable<Need[]> {        
+        const url = `${this.needsUrl}?sortingOption=${sortingOption}`;
         return this.http.get<Need[]>(url).pipe(
             catchError(this.handleError<Need[]>('getNeedsFromCupboard'))
         );

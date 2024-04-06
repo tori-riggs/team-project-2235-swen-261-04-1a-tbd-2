@@ -90,6 +90,7 @@ public class NeedController {
         }
     }
 
+    /** 
     @GetMapping("cupboard")
     public ResponseEntity<Need[]> getNeeds(@RequestParam SortingOption sortingOption) {
         LOG.info("GET /needs/cupboard with sorting option");
@@ -101,6 +102,7 @@ public class NeedController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+    */
 
     /**
      * Responds to the GET request for all {@linkplain Need needs} whose name contains
