@@ -42,7 +42,7 @@ public class MessageFileDAO implements MessageDAO {
      *
      * @throws IOException when file cannot be accessed or read from
      */
-    public MessageFileDAO(@Value("${needs.file}") String filename,ObjectMapper objectMapper) throws IOException {
+    public MessageFileDAO(@Value("${messages.file}") String filename,ObjectMapper objectMapper) throws IOException {
         this.filename = filename;
         this.objectMapper = objectMapper;
         load();  // load the needs from the file

@@ -15,6 +15,7 @@ import { LoginComponent } from './login/login.component';
 import { CupboardComponent } from './cupboard/cupboard.component';
 import { FundingBasketComponent } from './funding-basket/funding-basket.component';
 import { SupportComponent } from './support/support.component';
+import { InboxComponent } from './inbox/inbox.component';
 
 @NgModule({
   declarations: [
@@ -28,6 +29,7 @@ import { SupportComponent } from './support/support.component';
     CupboardComponent,
     FundingBasketComponent,
     SupportComponent,
+    InboxComponent,
   ],
   imports: [
     BrowserModule,

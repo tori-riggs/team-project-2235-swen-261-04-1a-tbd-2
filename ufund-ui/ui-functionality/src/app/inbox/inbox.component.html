@@ -1,0 +1,22 @@
+ <div class ="message-inbox">
+    <div class = "messaging" *ngIf="permissionLevel === 'USER';">
+        <form  #MessageForm>
+            <label for="messaging-body">Message:</label><br>
+            <input #messageBody><br>
+            <span>
+                <button type="submit" (click)="createMessage(messageBody.value);messageBody.value=''">Send Message</button>
+            </span>       
+        </form>
+    </div>
+
+<!--*ngFor="let message of messages"-->
+    <div class="inbox-box" *ngIf="permissionLevel === 'USER' || permissionLevel === 'ADMIN';">
+        <h1>Inbox of {{username}}</h1>
+        <div class = "messages-box" *ngFor="let message of messages">
+            <span>
+                <h6>{{message.timestamp}} | {{message.username}}: {{message.text}}</h6> 
+                <button *ngIf="permissionLevel === 'USER';"  type="submit" (click)="deleteMessage(message)">x</button>
+            </span>
+        </div>
+    </div>
+</div>   
