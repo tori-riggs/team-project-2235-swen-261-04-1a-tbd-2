@@ -106,6 +106,9 @@ export class NeedsComponent implements OnInit {
 
   addToCart(need: Need){
     console.log(`${need.id}`)
+    if(need.quantity == 0){
+      return
+    }
     this.needCheckoutService.addNeedToFundingBasket(this.username, this.password, need.id, 1).subscribe(
       checkout => {
         this.needCheckout = checkout; // Update needCheckout after adding
