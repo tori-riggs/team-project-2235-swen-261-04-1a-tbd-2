@@ -28,8 +28,9 @@ public class NeedService {
         return needDAO.getNeeds();
     }
 
-    public Need[] getNeedsFromCupboard(SortingOption sortingOption) throws IOException {
+    public Need[] sortingNeedsFromCupboard(SortingOption sortingOption) throws IOException {
         Need[] needs = needDAO.getNeeds();
+        System.out.println(needs.length);
         switch (sortingOption) {
             case ALPHABETICAL:
                 return sortAlphabetical(needs);
@@ -40,6 +41,7 @@ public class NeedService {
             case NUMERICAL_REVERSE:
                 return sortNumericalReverse(needs);
         }
+        System.out.println("test");
         return needs;
     }
 
@@ -52,20 +54,15 @@ public class NeedService {
     }
 
     private Need[] sortNumerical(Need[] needs) {
-        return streamToArray(Arrays.stream(needs).sorted((a, b) -> Math.min(1, Math.max(-1, a.getId()-b.getId()))));
+        return streamToArray(Arrays.stream(needs).sorted((a, b) -> Math.min(1, Math.max(-1, a.getCost()-b.getCost()))));
     }
 
     private Need[] sortNumericalReverse(Need[] needs) {
-        return streamToArray(Arrays.stream(needs).sorted((a, b) -> Math.min(1, Math.max(-1, b.getId()-a.getId()))));
+        return streamToArray(Arrays.stream(needs).sorted((a, b) -> Math.min(1, Math.max(-1, b.getCost()-a.getCost()))));
     }
 
     private Need[] streamToArray(Stream<Need> stream) {
-        Need[] array = new Need[(int)stream.count()];
-        List<Need> needList = stream.toList();
-        for(int i = 0; i<needList.size(); i++) {
-            array[i] = needList.get(i);
-        }
-        return array;
+        return stream.toArray(Need[]::new);
     }
 
     public Need[] findMatchingNeedsFromCupboard(String name) throws IOException {

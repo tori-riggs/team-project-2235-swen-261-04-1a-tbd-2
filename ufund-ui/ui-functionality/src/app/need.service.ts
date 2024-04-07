@@ -12,6 +12,7 @@ import { catchError, map, tap } from 'rxjs/operators';
 })
 export class NeedService {
     newSearchEvent: EventEmitter<void> = new EventEmitter<void>();
+    newSortEvent: EventEmitter<void> = new EventEmitter<void>();
     private needsUrl = 'http://localhost:8080/needs/cupboard'// URL to web API
 
     httpOptions = {
@@ -20,6 +21,10 @@ export class NeedService {
 
     emitNewSearchEvent(): void {
         this.newSearchEvent.emit();
+    }
+
+    emitNewSortEvent(): void {
+        this.newSortEvent.emit();
     }
 
     constructor(
@@ -46,7 +51,7 @@ export class NeedService {
     }
 
     sortNeeds(sortingOption: String): Observable<Need[]> {        
-        const url = `${this.needsUrl}?sortingOption=${sortingOption}`;
+        const url = `${this.needsUrl}/sorting?sortingOption=${sortingOption}`;
         return this.http.get<Need[]>(url).pipe(
             catchError(this.handleError<Need[]>('getNeedsFromCupboard'))
         );

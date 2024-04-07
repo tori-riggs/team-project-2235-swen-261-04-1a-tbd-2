@@ -90,19 +90,20 @@ public class NeedController {
         }
     }
 
-    /** 
-    @GetMapping("cupboard")
+    
+    @GetMapping("cupboard/sorting")
     public ResponseEntity<Need[]> getNeeds(@RequestParam SortingOption sortingOption) {
         LOG.info("GET /needs/cupboard with sorting option");
 
         try {
-            Need[] needs = needService.getNeedsFromCupboard(sortingOption);
+            System.out.println(sortingOption);
+            Need[] needs = needService.sortingNeedsFromCupboard(sortingOption);
             return new ResponseEntity<>(needs, HttpStatus.OK);
         } catch (IOException e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-    */
+    
 
     /**
      * Responds to the GET request for all {@linkplain Need needs} whose name contains

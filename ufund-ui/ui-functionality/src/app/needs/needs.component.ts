@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { Need } from '../need';
 import { NeedService } from '../need.service';
 import { MessageService } from '../message.service';
@@ -38,6 +38,16 @@ export class NeedsComponent implements OnInit {
       this.messageService.add(`NeedsComponent: Selected need id=${need.id}`);
   }
 
+  sorting(sortingOption: string){
+    console.log(`${sortingOption}`)
+      this.needService.sortNeeds(sortingOption).subscribe(needs => {
+        this.needs = needs
+        console.log(needs[0]);
+      })
+
+      
+  }
+
   getNeeds(): void { 
     this.term = localStorage.getItem("search") ?? "";
     if(this.term != null && this.term != ""){
@@ -65,6 +75,16 @@ export class NeedsComponent implements OnInit {
       this.needService.newSearchEvent.subscribe(() => {
         this.getNeeds()
       })
+
+      this.needService.newSortEvent.subscribe(
+        () => {
+          var sort = localStorage.getItem("sort")
+          if(sort){
+            this.sorting(sort)
+          }
+          
+        }
+      )
   }
   
   update(need: Need): void {
