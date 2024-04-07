@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { EventEmitter, Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { AuthCredentials } from './login';
 import { MessageService } from './message.service';
@@ -8,7 +8,7 @@ import { catchError, map, tap } from 'rxjs/operators';
   providedIn: 'root'
 })
 export class LoginService {
-
+  newLogoutEvent: EventEmitter<void> = new EventEmitter<void>();
   private authUrl = 'http://localhost:8080/auth'; // URL to web API
 
     httpOptions = {
@@ -23,6 +23,9 @@ export class LoginService {
         return this.http.get<AuthCredentials>(`${this.authUrl}?username=${username}&password=${password}`);
     }
     
+    emitNewLogoutEvent(){
+      this.newLogoutEvent.emit();
+    }
     
       // Function to get permission level of a user
       getPermissionLevel(username: string, password: string): Observable<string> {

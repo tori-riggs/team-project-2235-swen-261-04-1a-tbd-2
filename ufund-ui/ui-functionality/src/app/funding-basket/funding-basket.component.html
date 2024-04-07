@@ -1,4 +1,10 @@
-<div *ngIf="permissionLevel === 'USER';" class = "funding-basket">
+<div *ngIf="permissionLevel === 'ADMIN'">
+    <br><br><br>
+</div>
+
+
+<div  class = "funding-basket">
+    <div *ngIf="permissionLevel === 'USER';">
     <br>
     <span class="badge">{{username}} Funding Basket:</span><br><br>
     <div >
@@ -9,10 +15,28 @@
                         <div style="color:aliceblue; padding-bottom: 0.5%;">{{need.name}}({{need.quantity}}): ${{need.cost}}</div>
                     </span>
                 </a>       
-                <button type="button" class="add" title="add need to cart"(click)="remove(need)">Remove</button>
+                <button style="background-color:lightblue;" type="button" class="add" title="add need to cart"(click)="remove(need)">Remove</button>
             </div>
-            <button type="button" class="checkout" title="checkout" (click)="checkout(); ">Checkout</button>
+            <button style="background-color:lightblue;" type="button" class="checkout" title="checkout" (click)="checkout(); ">Checkout</button>
             <div style="color:aliceblue;">Total: ${{totalPrice}}</div>
         </div>
     </div>
+    </div>
+
+    <div class="create-need" *ngIf="permissionLevel === 'ADMIN'">
+        <label style="color:aliceblue;" for="new-need">Need name: </label>
+        <input style="background-color:lightblue;" id="new-need" #needName /><br>
+        <label style="color:aliceblue;" for="new-need">Need cost: </label>
+        <input style="background-color:lightblue;" type = "number" id="new-need" #needCost /><br>
+        <label style="color:aliceblue;" for="new-need">Need quantity: </label>
+        <input style="background-color:lightblue;" type = "number" id="new-need" #needQuantity /><br>
+        <label style="color:aliceblue;" for="new-need">Need description: </label>
+        <input style="background-color:lightblue;" id="new-need" #needDescription /><br>
+        <button style="background-color:lightblue;" type="button" class="add-button" (click)="add(needName.value, needCost.value, needQuantity.value, needDescription.value); needName.value=''; needCost.value=''; needQuantity.value=''; needDescription.value=''">
+                Add need
+        </button><br>
+    </div>
 </div>
+
+
+

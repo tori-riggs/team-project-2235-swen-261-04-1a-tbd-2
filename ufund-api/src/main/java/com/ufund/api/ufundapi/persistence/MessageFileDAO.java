@@ -3,6 +3,7 @@ package com.ufund.api.ufundapi.persistence;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.logging.Logger;
@@ -76,7 +77,7 @@ public class MessageFileDAO implements MessageDAO {
                 messageArrayList.add(message);
             }
         }
-
+        Collections.reverse(messageArrayList);
         Message[] messageArray = new Message[messageArrayList.size()];
         messageArrayList.toArray(messageArray);
         return messageArray;

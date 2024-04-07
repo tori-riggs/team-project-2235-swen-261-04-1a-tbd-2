@@ -1,7 +1,12 @@
 /* HeroSearch private styles */
 
-  
-  li {
+
+.search-component {
+  padding-bottom: 1%;
+}
+
+
+li {
     list-style-type: none;
   }
   

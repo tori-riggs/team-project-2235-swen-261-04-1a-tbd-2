@@ -104,18 +104,6 @@ export class NeedsComponent implements OnInit {
     this.creating = true;
   }
 
-  add(name: string, cost: any, quantity: any, description: string): void {
-    name = name.trim();
-    description = description.trim();
-    //
-    if (isNaN(parseInt(cost)) || isNaN(parseInt(quantity)) || !name || !description || cost <=0 || quantity <= 0) { return; }
-    this.needService.createNeedInCupboard({ name, cost, quantity, description } as Need, this.username, this.password)
-      .subscribe(need => {
-        this.needs.push(need);
-        this.emptyCuboard = false;
-      });
-  }
-
   addToCart(need: Need){
     console.log(`${need.id}`)
     this.needCheckoutService.addNeedToFundingBasket(this.username, this.password, need.id, 1).subscribe(
