@@ -77,8 +77,7 @@ Both the ViewModel and Model are built using Java and Spring Framework. Details 
 
 This section describes the web interface flow; this is how the user views and interacts with the web application.
 
-> _Provide a summary of the application's user interface.  Describe, from the user's perspective, the flow of the pages in the web application._
-
+Our application's user interface consists of a website where users are first prompted with a log-in screen. Following this, they are presented a window which contains the Needs Cupboard, containing all of the available Needs. They can select a Need from this window which moves the Need to the Helper's funding basket, where they can then proceed to checkout. For a U-Fund Manager, the site appears the same, however there are buttons / options for the Manager to be able to manage the Cupboard (i.e, add, remove, edit Needs). 
 
 ### View Tier
 > _**[Sprint 4]** Provide a summary of the View Tier UI of your architecture.
@@ -99,7 +98,14 @@ This section describes the web interface flow; this is how the user views and in
  >* _Include other details such as attributes and method signatures that you think are needed to support the level of detail in your discussion._
 
 ### ViewModel Tier
-NeedController.java -- This class handles the REST API requests for the Need resource
+NeedController.java
+Manages REST API requests for the Need resource, handling operations related to needs within the application. It interfaces with NeedService and AuthService to perform actions like retrieving, creating, updating, and deleting needs based on user permissions. This controller ensures that only authorized users can perform sensitive operations, aligning with the system's security and business logic. By managing how needs are interacted with, NeedController directly supports the Needs Management and Helper functionality, providing endpoints for Helpers to add needs to their funding basket, and for U-fund Managers to manage needs in the cupboard.
+
+MessageController.java
+Handles communication within the system by managing REST API requests for messaging functionalities. It uses MessageService for operations on messages, such as retrieving all messages, fetching messages from a specific user, creating, and deleting messages. The controller ensures that these operations are performed according to the user's authorization level, facilitated by AuthService. This setup enables a dynamic interaction platform within the U-Fund application, allowing users to communicate needs, updates, and information effectively, enriching the user experience and engagement.
+
+AuthController.java
+Responsible for authentication-related actions within the application, AuthController interfaces with AuthService to manage authorization levels and credentials verification. It provides endpoints for checking a user's permission level, enhancing the system's security by ensuring that operations are executed by users with the appropriate access rights. This controller is crucial for maintaining the integrity and security of the U-Fund application, directly supporting the Minimal Authentication feature by managing user login and logout functionalities.
 
 > _**[Sprint 4]** Provide a summary of this tier of your architecture. This
 > section will follow the same instructions that are given for the View
@@ -111,12 +117,17 @@ NeedController.java -- This class handles the REST API requests for the Need res
 ![ViewModel](ViewModel.png)
 
 ### Model Tier
-Need.java -- Represents a Need entity 
+Need.java
+Represents a Need entity within the system. This class is responsible for encapsulating all the properties and behaviors of a need, including its identification, description, status (fulfilled or unfulfilled), and other attributes. The Need class plays a crucial role in the Needs Management feature, allowing U-fund Managers to add, remove, and edit the details of needs stored in their Needs Cupboard.
 
-AuthCredentials.java -- Represents Authorization Credentials 
+AuthCredentials.java
+Represents Authorization Credentials used in the system for authentication purposes. This class holds information necessary for authenticating users, such as usernames and passwords. It is integral to the system's security, ensuring that operations like login and logout are handled securely. The AuthCredentials class underpins the Minimal Authentication feature, enabling a basic but essential level of security for Helper and U-fund Manager interactions with the platform.
 
-The need class uses the information given by the AuthCredentials to ensure that 'need operations',
-(add/remove/etc.) can only be performed by the intended user. This management is critical to ensure that the application has the minimal authentication features outlined in the Minimal Viable Product Vision. 
+NeedCheckout.java
+Represents the Helper's Checkout Basket, a key component of the Helper functionality within the application. This class manages the collection of needs that Helpers wish to support, allowing them to add or remove needs from their basket. The NeedCheckout class is vital for facilitating the checkout process, where Helpers can review their selected needs before proceeding to fund them, aligning with the project's goal to connect non-profit organizations with those who can help fulfill their needs.
+
+Message.java
+Represents a Message object, crucial for enabling communication within the system. This class encapsulates messages sent by users, containing attributes such as message ID, username (sender), timestamp, and the text of the message itself. The Message class is designed to support features such as messaging between Helpers and U-fund Managers or between users and the system for notifications, queries, and updates. By facilitating communication, the Message class enhances user engagement and the overall functionality of the U-fund application, making interactions more dynamic and responsive to user needs.
 
 ![Model](model.png)
 
@@ -135,7 +146,13 @@ class methods for operations, like a Helper using FundingBasket methods to add n
 system's parts decoupled. Implement facade or service layers, such as a NeedManagementService, to
 mediate interactions between the UI and data models, reducing direct component coupling
 
-> _**[Sprint 3 & 4]** OO Design Principles should span across **all tiers.**_
+Open/Closed Principle (SOLID): This principle is applied as a means so that the system is open for extension, but closed for modification. This approach is crucial to implement additional features such as our 10% additional feature enhancnements, so that it coexists with our existing functionalities seamlessly. An example of this would be our existing Needs functionality. This was implemented through our Java Spring backend, (which defines contracts for adding, removing, and editing needs in places throughout our application) thereby allowing for new implementations to extend these behaviors without modifying existing logic.
+
+Dependency Inversion/Injection (SOLID): Dependency inversion is key in minimizing coupling between components, especially between the backend server logic written in Java Spring and the frontend in Angular. By depending on abstractions rather than concrete classes, we can make our backend services easily interchangeable and testable, enhancing the project's maintainability. Dependency injection, facilitated by Spring's IoC (Inversion of Control) container, will be used to inject these dependencies at runtime, allowing for more flexible and decoupled code. For instance, a AuthService interface can be defined and implemented by different classes that manage authentication, and the specific implementation can be injected into controllers that require it, depending on the project's current configuration.
+
+Low Coupling (GRASP): Low coupling is critical throughout our application to ensure modularity and ease of modification. This principle is essential in the design of our system's components, in the sense that they require the least possible knowledge of each other to function. For instance, in the implementation of the Helper functionality and the Needs Management, we designed our Angular services to interact with our API in a way that minimizes their dependencies of each other. Furthermore, this can be faciliated by creating focused services that perform specific tasks such as our AuthService, rather than a monolithic service that handles multiple responsibilites. 
+
+Pure Fabrication (GRASP): Pure fabrication is a principle that suggests creating classes do not necessarily represent a concept in the problem domain, especially to achieve low coupling and high cohesion between functionalities. In our application, pure fabrication is demonstrated through our utility classes / services that handle application-wide tasks such as our authentication services and data persistance classes, where instead of coupling authentication logic with user logic, our AuthService handles security concerns can be implemented, making the system more modular and easier to maintain.
 
 ## Static Code Analysis/Future Design Improvements
 > _**[Sprint 4]** With the results from the Static Code Analysis exercise, 
@@ -161,8 +178,8 @@ These are some of our code coverage test results. As shown, our code is generall
 ![Model Code Coverage](modelcc.png)
 
 ![Persistance Code Coverage](persistancecc.png)
-Both the AuthFileDAO and the NeedFileDAO have missed instructions and missed branches. In the AuthFileDAO, the getAuthCredentials method has two branches that have not been tested: if the authCredentials contains the given username key and if it does not. We must add two tests: one that covers if the authCredentials contains the key and one that covers the case where it does not.
 
+Both the AuthFileDAO and the NeedFileDAO have missed instructions and missed branches. In the AuthFileDAO, the getAuthCredentials method has two branches that have not been tested: if the authCredentials contains the given username key and if it does not. We must add two tests: one that covers if the authCredentials contains the key and one that covers the case where it does not.
 
 ![NeedFileDAO Code Coverage](needfileddaocc.png)
 
@@ -172,3 +189,5 @@ The NeedFileDAO’s code coverage needs to be improved by implementing a test fo
 (2024/02/21): Sprint #1 -- Created the necessary utilities needed to perform cURL operations on the Need entity. Includes functionalities such as creating / deleting need, retrieving specific need, searching need by partial name, updating needs, and listing all needs.
 
 (2024/03/22): Sprint #2 -- Implemented all functionalities for minimal authentication so users are limited to performing actions according to their privileges. Introduced testing, and code coverage testing to ensure that our code is robust and functional. Also implemented functionalities related to the 'Checkout' of our application, such that users can fund a specific need, and ensure consistency with the cupboard.  
+
+(2024/04/08): Sprint #3 -- Totally implemented all minimal viable product features as outlined in the vision document. The 10% additional features, messaging / suggestion service, and sorting features were completely implemented. Additional changes were made to our UI to represent the fully-fledged product, which includes images, color styling, and other visually appealing features. 
