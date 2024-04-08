@@ -3,6 +3,7 @@ import { MessageService } from '../message.service';
 import { InboxService } from '../inbox.service'
 import { Observable } from 'rxjs';
 import { Message } from '../message';
+import { LoginService } from '../login.service';
 
 @Component({
   selector: 'app-inbox',
@@ -20,7 +21,7 @@ export class InboxComponent {
   check?: Message;
 
   constructor(private inboxService: InboxService, 
-    private messageService: MessageService) 
+    private messageService: MessageService, private LoginService: LoginService) 
     {}
 
   onSelect(message: Message){
@@ -32,6 +33,12 @@ export class InboxComponent {
 
     this.inboxService.newMessageEvent.subscribe(() => {
       this.getMessages()})
+
+    this.LoginService.newLogoutEvent.subscribe(()=>{
+      this.username = localStorage.getItem("username") ?? "";
+      this.password = localStorage.getItem("password") ?? "";
+      this.permissionLevel = localStorage.getItem("perms") ?? "";
+    }) 
   }
 
   getMessages(){
@@ -49,6 +56,7 @@ export class InboxComponent {
       timestamp: days[date.getDay()]+' '+date.getHours().toString()+':'+date.getMinutes().toString(), // Use currentTimeMillis
       text: userText,
     } as Message;
+    if(userText == ""){return;}
     this.inboxService.createMessage(this.username,this.password,userMessage).subscribe(
       message => {
         this.check = message

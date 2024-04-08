@@ -9,11 +9,14 @@
     padding-bottom: 10px;
 }
 
+
 .needs-storage {
+    padding-right:4%;
+    background-color: blue;
     border: solid;
 }
 
 .needs {
-    padding: 1%;
+    border: solid;
     float: left;
 }

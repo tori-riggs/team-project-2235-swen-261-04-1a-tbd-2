@@ -1,4 +1,12 @@
 /* AppComponent's private CSS styles */
+.dashy{
+    margin: 0;
+    padding: 0;
+    text-align: center;
+    background-color: blue;
+    padding-bottom: 1%;
+}
+
 h1 {
     margin-bottom: 0;
   }

@@ -2,6 +2,7 @@
 .left {
   width: 40%;
   float: left;
+  text-align: center;
 }
 
 .about-us {
@@ -16,4 +17,8 @@
   text-align: center;
   width: 58%;
   float: left;
+}
+
+.about-us {
+  line-height: 2;
 }

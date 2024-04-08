@@ -1,21 +1,9 @@
 
-<div *ngIf="permissionLevel === 'ADMIN'">
-    <label for="new-need">Need name: </label>
-    <input id="new-need" #needName /><br>
-    <label for="new-need">Need cost: </label>
-    <input type = "number" id="new-need" #needCost /><br>
-    <label for="new-need">Need quantity: </label>
-    <input type = "number" id="new-need" #needQuantity /><br>
-    <label for="new-need">Need description: </label>
-    <input id="new-need" #needDescription /><br>
-    <button type="button" class="add-button" (click)="add(needName.value, needCost.value, needQuantity.value, needDescription.value); needName.value=''; needCost.value=''; needQuantity.value=''; needDescription.value=''">
-            Add need
-    </button><br>
-</div>
+
 
 
 <ul class="needs" *ngIf="!emptyCuboard; else emptyTemplate">
-    <div *ngFor="let need of needs" >
+    <div *ngFor="let need of needs" class = "need-box">
         <div *ngIf="permissionLevel === 'USER';">
             <a>
                 {{need.name}}
@@ -23,7 +11,7 @@
                 <div>quantity: {{need.quantity}}</div>
                 <div>description: {{need.description}}</div>
             </a>       
-            <button type="button" class="add" title="add need to cart"(click)="addToCart(need)">add to cart</button>
+            <button style="background-color:aliceblue;" type="button" class="add" title="add need to cart"(click)="addToCart(need)">add to cart</button>
         </div>
 
         <div *ngIf="permissionLevel === 'ADMIN';">
@@ -35,8 +23,8 @@
                     <div>description: {{need.description}}</div>
                 </a> 
             
-                <button type="button" class="delete" title="delete need"(click)="delete(need)">x</button>
-                <button type="button" class="edit" title="edit need" (click)="beginEdit(need)">
+                <button style="background-color:aliceblue;" type="button" class="delete" title="delete need"(click)="delete(need)">x</button>
+                <button style="background-color:aliceblue;" type="button" class="edit" title="edit need" (click)="beginEdit(need)">
                     edit
                 </button>
             </div>
@@ -49,7 +37,7 @@
               <input [(ngModel)]="selectedNeed.quantity" placeholder="{{selectedNeed.quantity}}">
               <input [(ngModel)]="selectedNeed.description" placeholder="{{selectedNeed.description}}">
             </div>
-            <button type="button" class="update" title="update need" (click)="update(need)">update</button>
+            <button style="background-color:aliceblue;" type="button" class="update" title="update need" (click)="update(need)">update</button>
           </ng-template>
           
         
@@ -65,5 +53,5 @@
 </ul>
 
 <ng-template #emptyTemplate>
-    <h1>The cupboard has no needs at this time.</h1>
+    <h1 style="color:aliceblue;">The cupboard has no needs at this time.</h1>
 </ng-template>

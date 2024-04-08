@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { Need } from '../need';
 import { NeedService } from '../need.service';
 import { MessageService } from '../message.service';
@@ -38,6 +38,16 @@ export class NeedsComponent implements OnInit {
       this.messageService.add(`NeedsComponent: Selected need id=${need.id}`);
   }
 
+  sorting(sortingOption: string){
+    console.log(`${sortingOption}`)
+      this.needService.sortNeeds(sortingOption).subscribe(needs => {
+        this.needs = needs
+        console.log(needs[0]);
+      })
+
+      
+  }
+
   getNeeds(): void { 
     this.term = localStorage.getItem("search") ?? "";
     if(this.term != null && this.term != ""){
@@ -65,6 +75,16 @@ export class NeedsComponent implements OnInit {
       this.needService.newSearchEvent.subscribe(() => {
         this.getNeeds()
       })
+
+      this.needService.newSortEvent.subscribe(
+        () => {
+          var sort = localStorage.getItem("sort")
+          if(sort){
+            this.sorting(sort)
+          }
+          
+        }
+      )
   }
   
   update(need: Need): void {
@@ -84,20 +104,11 @@ export class NeedsComponent implements OnInit {
     this.creating = true;
   }
 
-  add(name: string, cost: any, quantity: any, description: string): void {
-    name = name.trim();
-    description = description.trim();
-    //
-    if (isNaN(parseInt(cost)) || isNaN(parseInt(quantity)) || !name || !description || cost <=0 || quantity <= 0) { return; }
-    this.needService.createNeedInCupboard({ name, cost, quantity, description } as Need, this.username, this.password)
-      .subscribe(need => {
-        this.needs.push(need);
-        this.emptyCuboard = false;
-      });
-  }
-
   addToCart(need: Need){
     console.log(`${need.id}`)
+    if(need.quantity == 0){
+      return
+    }
     this.needCheckoutService.addNeedToFundingBasket(this.username, this.password, need.id, 1).subscribe(
       checkout => {
         this.needCheckout = checkout; // Update needCheckout after adding

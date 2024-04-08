@@ -3,7 +3,7 @@ import { Need } from './need';
 import { NEEDS } from './mock-needs';
 import { Observable, of } from 'rxjs';
 import { MessageService } from './message.service';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { catchError, map, tap } from 'rxjs/operators';
 
 
@@ -12,6 +12,7 @@ import { catchError, map, tap } from 'rxjs/operators';
 })
 export class NeedService {
     newSearchEvent: EventEmitter<void> = new EventEmitter<void>();
+    newSortEvent: EventEmitter<void> = new EventEmitter<void>();
     private needsUrl = 'http://localhost:8080/needs/cupboard'// URL to web API
 
     httpOptions = {
@@ -22,9 +23,16 @@ export class NeedService {
         this.newSearchEvent.emit();
     }
 
+    emitNewSortEvent(): void {
+        this.newSortEvent.emit();
+    }
+
     constructor(
         private http: HttpClient,
         private messageService: MessageService) { }
+
+
+        
 
     // Function to get a single need from the cupboard
     getNeedFromCupboard(id: number): Observable<Need> {
@@ -37,6 +45,13 @@ export class NeedService {
     // Function to get all needs from the cupboard
     getNeedsFromCupboard(): Observable<Need[]> {
         const url = `${this.needsUrl}`;
+        return this.http.get<Need[]>(url).pipe(
+            catchError(this.handleError<Need[]>('getNeedsFromCupboard'))
+        );
+    }
+
+    sortNeeds(sortingOption: String): Observable<Need[]> {        
+        const url = `${this.needsUrl}/sorting?sortingOption=${sortingOption}`;
         return this.http.get<Need[]>(url).pipe(
             catchError(this.handleError<Need[]>('getNeedsFromCupboard'))
         );

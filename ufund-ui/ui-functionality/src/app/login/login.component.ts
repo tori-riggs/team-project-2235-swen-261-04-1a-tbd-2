@@ -45,6 +45,7 @@ export class LoginComponent {
         localStorage.setItem("perms", this.permissionLevel)
         localStorage.setItem("using", "true")
         this.isLoggedIn = true;
+        this.loginService.emitNewLogoutEvent();
       },
       error: err => {
         // Handle authentication error
@@ -62,5 +63,6 @@ export class LoginComponent {
     this.isLoggedIn = false;
     this.username = ''
     this.password = ''
+    this.loginService.emitNewLogoutEvent();
   }
 }
